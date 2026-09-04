@@ -9,10 +9,13 @@ miembro por encima de 1 es el **6**, que es clásico y **no se reclama acá**—
 Con `b = -1` es `n | phi(n)`. Este repositorio trata de lo que pasa para `b`
 general.
 
+> **¿Es tu primera vez con esto? Empezá acá:** [**Explicación desde cero**](https://jorgell23-sys.github.io/squarefree-shifted-prime-products/es/) —
+> todo contado con peras y manzanas, con dibujos y sin conocimientos previos.
+
 ```
 $ python verify.py
 ...
-20 passed, 0 failed
+27 passed, 0 failed
 ```
 
 Sin dependencias. Unos cuatro segundos.
@@ -66,7 +69,8 @@ función de `ω(b)`, ni de `π(b)`: los impares consecutivos 61 y 63 dan **24** 
 |---|---|
 | [`RESULT.md`](RESULT.md) | enunciados, demostraciones, tablas y **lo que esto no afirma** |
 | [`PRIOR_ART.md`](PRIOR_ART.md) | qué se buscó, dónde y con qué términos — con el control positivo que **falló** y el que funcionó |
-| `verify.py` | 20 controles, sin dependencias, ~4 s |
+| `verify.py` | 27 controles, sin dependencias, ~4 s |
+| [`docs/`](https://jorgell23-sys.github.io/squarefree-shifted-prime-products/es/) | la **página explicativa**: lo mismo desde cero, para cualquiera |
 | `src/` | implementación autónoma, sólo biblioteca estándar |
 | `data/` | generado íntegramente por `src/generate_data.py`; ningún número escrito a mano |
 

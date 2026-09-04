@@ -10,7 +10,7 @@ This interpolates two classical objects: for `b = 1` the product is `sigma(n)`
 (squarefree `n` have `sigma(n) = prod (p+1)`), so `S_1` is the squarefree part
 of `n | sigma(n)`; for `b = -1` the product is `phi(n)`.
 
-Everything below is checked by `verify.py` (20 checks, no dependencies, ~4 s),
+Everything below is checked by `verify.py` (27 checks, no dependencies, ~5 s),
 including one control cross-checked against a published sequence we did not
 produce.
 
@@ -145,7 +145,7 @@ values up to 2001 are all multiples of `105 = 3·5·7`: `b = 1155` (79,725,358),
 
 ## Reproducing
 
-    python verify.py                 # 20 checks, ~4 s, no dependencies
+    python verify.py                 # 27 checks, ~4 s, no dependencies
     python src/generate_data.py      # regenerates everything under data/
 
 `data/` is produced entirely by `src/generate_data.py`; no number in this

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="100%" role="img" aria-labelledby="t d">
+<title id="t">The recipe, with n = 15 and b = 7</title><desc id="d">Take the primes of 15, add 7 to each, multiply them, and the result divides by 15 with no remainder.</desc>
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;fill:#1f2933}
+  .m{fill:#6b7785}.s{font-size:13px}.xs{font-size:11px}
+  .lbl{font-size:14px;font-weight:600}
+  .big{font-size:20px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  @media (prefers-color-scheme:dark){
+    text{fill:#e4e7eb}.m{fill:#9aa5b1}
+    .stroke{stroke:#7b8794}
+  }
+</style>
+
+<text class="xs m" x="90" y="34" text-anchor="middle">1. the primes of n</text>
+<text class="xs m" x="265" y="34" text-anchor="middle">2. add b to each</text>
+<text class="xs m" x="445" y="34" text-anchor="middle">3. multiply them</text>
+<text class="xs m" x="630" y="34" text-anchor="middle">4. does n divide it?</text>
+<text class="big" x="90" y="74" text-anchor="middle">15</text>
+<text class="xs m" x="90" y="94" text-anchor="middle">= 3 x 5</text>
+<circle cx="90" cy="150" r="24" fill="none" stroke="#2f6fb5" stroke-width="2" class="stroke"/>
+<text class="lbl" x="90" y="155" text-anchor="middle">3</text>
+<circle cx="90" cy="212" r="24" fill="none" stroke="#2f6fb5" stroke-width="2" class="stroke"/>
+<text class="lbl" x="90" y="217" text-anchor="middle">5</text>
+<path d="M 120 150 L 221 150" stroke="#9aa5b1" stroke-width="2" marker-end="url(#a)" class="stroke"/>
+<text class="xs" x="177" y="142" text-anchor="middle" fill="#2e7d52">+7</text>
+<rect x="229" y="130" width="72" height="40" rx="8" fill="none" stroke="#2e7d52" stroke-width="2" class="stroke"/>
+<text class="lbl" x="265" y="155" text-anchor="middle">10</text>
+<path d="M 120 212 L 221 212" stroke="#9aa5b1" stroke-width="2" marker-end="url(#a)" class="stroke"/>
+<text class="xs" x="177" y="204" text-anchor="middle" fill="#2e7d52">+7</text>
+<rect x="229" y="192" width="72" height="40" rx="8" fill="none" stroke="#2e7d52" stroke-width="2" class="stroke"/>
+<text class="lbl" x="265" y="217" text-anchor="middle">12</text>
+<text class="big" x="445" y="186" text-anchor="middle">120</text>
+<text class="xs m" x="445" y="208" text-anchor="middle">10 x 12</text>
+<path d="M 305 150 Q 405 150 419 180" stroke="#9aa5b1" stroke-width="2" fill="none" marker-end="url(#a)" class="stroke"/>
+<path d="M 305 212 Q 405 212 419 180" stroke="#9aa5b1" stroke-width="2" fill="none" marker-end="url(#a)" class="stroke"/>
+<path d="M 479 180 L 552 180" stroke="#9aa5b1" stroke-width="2" marker-end="url(#a)" class="stroke"/>
+<rect x="558" y="152" width="150" height="56" rx="10" fill="none" stroke="#c8871a" stroke-width="2.5"/>
+<text class="lbl" x="633" y="178" text-anchor="middle" fill="#c8871a">YES: 120 = 15 x 8</text>
+<text class="xs m" x="633" y="198" text-anchor="middle">so 15 belongs to S_7</text>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa5b1"/></marker></defs>
+</svg>

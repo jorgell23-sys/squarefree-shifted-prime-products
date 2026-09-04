@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Números que se llevan bien con sus primos — explicación desde cero</title>
+<meta name="description" content="Qué son los conjuntos S_b, cómo se descubrieron y para qué sirven, explicado desde cero para quien sólo sabe dividir.">
+<style>
+:root{
+  --ink:#1f2933; --soft:#52606d; --mute:#7b8794; --line:#d9e0e6;
+  --bg:#fbfbf9; --card:#ffffff; --blue:#2f6fb5; --green:#2e7d52;
+  --amber:#a8700f; --red:#c0442e; --sel:#e8f0fa;
+  --serif:Georgia,'Iowan Old Style','Palatino Linotype',Palatino,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#e4e7eb;--soft:#cbd2d9;--mute:#9aa5b1;--line:#3e4c59;
+        --bg:#12171c;--card:#1a2027;--blue:#7aaee0;--green:#6ec295;
+        --amber:#e0a63f;--red:#e08272;--sel:#1e2a38;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font-family:var(--serif);font-size:19px;line-height:1.72}
+.wrap{max-width:50rem;margin:0 auto;padding:0 1.25rem 6rem}
+header.top{padding:3.5rem 0 2rem;border-bottom:3px double var(--line);margin-bottom:2rem}
+.kicker{font-family:var(--sans);font-size:.75rem;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--mute);margin:0 0 .9rem}
+h1{font-size:2.35rem;line-height:1.18;margin:0 0 .8rem;letter-spacing:-.015em}
+.sub{font-size:1.12rem;color:var(--soft);margin:0}
+.byline{font-family:var(--sans);font-size:.82rem;color:var(--mute);margin-top:1.6rem}
+h2{font-family:var(--sans);font-size:1.42rem;line-height:1.3;margin:3.2rem 0 .4rem;
+   letter-spacing:-.01em;scroll-margin-top:1rem}
+h2 .num{color:var(--mute);font-weight:600;margin-right:.5rem}
+h3{font-family:var(--sans);font-size:1.08rem;margin:2rem 0 .3rem}
+p{margin:0 0 1.15rem}
+a{color:var(--blue)}
+strong{font-weight:700}
+.lead{font-size:1.08rem;color:var(--soft)}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:12px;
+        padding:1.2rem 1.5rem;margin:0 0 2rem;font-family:var(--sans);font-size:.95rem}
+nav.toc p{font-weight:700;margin:0 0 .6rem;font-size:.8rem;letter-spacing:.1em;
+          text-transform:uppercase;color:var(--mute)}
+nav.toc ol{margin:0;padding-left:1.3rem;line-height:1.85}
+figure{margin:2rem 0;padding:0}
+figure img{width:100%;height:auto;display:block;background:var(--card);
+           border:1px solid var(--line);border-radius:12px;padding:.75rem}
+figcaption{font-family:var(--sans);font-size:.86rem;color:var(--mute);
+           margin-top:.7rem;line-height:1.55}
+figcaption b{color:var(--soft)}
+.box{border-radius:12px;padding:1.15rem 1.4rem;margin:1.8rem 0;
+     font-family:var(--sans);font-size:.97rem;line-height:1.65}
+.def{background:var(--sel);border:1px solid var(--line)}
+.def dt{font-weight:700;margin-top:.7rem}
+.def dt:first-child{margin-top:0}
+.def dd{margin:.15rem 0 0;color:var(--soft)}
+.try{background:var(--card);border:1px solid var(--green);border-left:5px solid var(--green)}
+.try p:first-child{margin-top:0}
+.try p:last-child{margin-bottom:0}
+.warn{background:var(--card);border:1px solid var(--amber);border-left:5px solid var(--amber)}
+.warn p:last-child{margin-bottom:0}
+.tag{display:inline-block;font-family:var(--sans);font-size:.7rem;font-weight:700;
+     letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.tag.g{color:var(--green)} .tag.a{color:var(--amber)} .tag.b{color:var(--blue)}
+.calc{font-family:var(--mono);font-size:.94rem;background:var(--card);
+      border:1px solid var(--line);border-radius:10px;padding:.9rem 1.1rem;
+      margin:1.2rem 0;overflow-x:auto;line-height:1.9}
+code{font-family:var(--mono);font-size:.9em;background:var(--sel);
+     padding:.1em .35em;border-radius:4px}
+.calc code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);
+      font-size:.92rem;margin:1.5rem 0}
+th,td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--line);
+      vertical-align:top}
+th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+td.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow-x:auto}
+ul.plain{list-style:none;padding-left:0}
+ul.plain li{padding-left:1.4rem;position:relative;margin-bottom:.6rem}
+ul.plain li::before{content:"→";position:absolute;left:0;color:var(--mute)}
+.refs{font-family:var(--sans);font-size:.93rem}
+.refs h3{margin-top:1.6rem}
+.refs ol{padding-left:1.3rem}
+.refs li{margin-bottom:.8rem;line-height:1.6}
+.refs .why{color:var(--mute);display:block;font-size:.87rem}
+footer{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--line);
+       font-family:var(--sans);font-size:.85rem;color:var(--mute)}
+.lang{font-family:var(--sans);font-size:.85rem;margin-bottom:1.5rem}
+@media (max-width:640px){
+  body{font-size:17px}
+  h1{font-size:1.8rem}
+  .wrap{padding:0 1rem 4rem}
+}
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  nav.toc,.lang{display:none}
+  h2{page-break-after:avoid}
+  figure{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="kicker">Explicación desde cero · sin conocimientos previos</p>
+  <h1>Números que se llevan bien con sus primos</h1>
+  <p class="sub">Qué son los conjuntos <b>S<sub>b</sub></b>, de dónde salió la
+  información, cómo se comprobó y para qué sirve. Si sabés dividir y te acordás
+  de qué es un número primo, con eso alcanza.</p>
+  <p class="byline">Jorge Ellena Godoy · 2026 ·
+  <a href="../index.html">English version</a> ·
+  <a href="https://github.com/jorgell23-sys/squarefree-shifted-prime-products">repositorio</a></p>
+</header>
+
+<nav class="toc">
+  <p>En esta página</p>
+  <ol>
+    <li><a href="#pregunta">La pregunta, con peras y manzanas</a></li>
+    <li><a href="#palabras">Las cinco palabras que hacen falta</a></li>
+    <li><a href="#receta">La receta, paso a paso</a></li>
+    <li><a href="#probalo">Probalo vos antes de seguir</a></li>
+    <li><a href="#origen">De dónde sale la información</a></li>
+    <li><a href="#hallazgos">Lo que encontramos</a></li>
+    <li><a href="#comprobar">¿Y cómo sabemos que no nos equivocamos?</a></li>
+    <li><a href="#sirve">¿Para qué sirve?</a></li>
+    <li><a href="#nodice">Lo que esto NO dice</a></li>
+    <li><a href="#glosario">Glosario</a> · <a href="#biblio">Para seguir leyendo</a></li>
+  </ol>
+</nav>
+
+<h2 id="pregunta"><span class="num">1</span>La pregunta, con peras y manzanas</h2>
+
+<p class="lead">Todo número entero está hecho de números primos, como una receta
+está hecha de ingredientes. El 15 está hecho de 3 y de 5. El 21, de 3 y de 7. El
+30, de 2, 3 y 5.</p>
+
+<p>Imaginá que cada ingrediente de la receta aporta algo al plato. Le pedimos a
+cada primo que aporte <b>él mismo más un número fijo</b>, que vamos a llamar
+<code>b</code>. Si <code>b</code> vale 7, entonces el primo 3 aporta
+<code>3 + 7 = 10</code>, y el primo 5 aporta <code>5 + 7 = 12</code>.</p>
+
+<p>Después multiplicamos todo lo que aportaron: <code>10 × 12 = 120</code>.</p>
+
+<p>Y ahora viene la pregunta, que es una sola:</p>
+
+<div class="box def">
+  <p style="margin:0"><b>¿El número original entra justo en lo que aportaron sus
+  propios primos?</b> Es decir: ¿120 se puede dividir por 15 sin que sobre
+  nada?</p>
+</div>
+
+<p>Sí: <code>120 ÷ 15 = 8</code>, exacto, no sobra nada. Cuando eso pasa decimos
+que el número <b>se lleva bien con sus primos</b>, y lo metemos en una bolsa que
+llamamos <b>S<sub>7</sub></b> — la bolsa de los que funcionan cuando
+<code>b</code> vale 7.</p>
+
+<p>Con el 21 no pasa lo mismo. Sus primos son 3 y 7; aportan
+<code>3+7 = 10</code> y <code>7+7 = 14</code>; el producto es
+<code>10 × 14 = 140</code>; y <code>140 ÷ 21</code> da 6 con resto 14. <b>No
+entra justo.</b> El 21 se queda afuera de la bolsa.</p>
+
+<p>Eso es todo el objeto de estudio. Cambiando el número <code>b</code> cambia
+la bolsa: hay una bolsa por cada <code>b</code>. Y la pregunta que este trabajo
+contesta es <b>cuántos números hay en cada bolsa, y por qué</b>.</p>
+
+<h2 id="palabras"><span class="num">2</span>Las cinco palabras que hacen falta</h2>
+
+<p>No hacen falta más que estas cinco. Cada una con un ejemplo chiquito.</p>
+
+<div class="box def">
+<dl>
+  <dt>Divide a</dt>
+  <dd>«3 divide a 12» quiere decir que <code>12 ÷ 3</code> da exacto, sin resto.
+  Se escribe <code>3 | 12</code>. En cambio 5 <b>no</b> divide a 12, porque
+  sobra 2.</dd>
+
+  <dt>Número primo</dt>
+  <dd>Un número mayor que 1 que sólo se puede dividir por 1 y por sí mismo:
+  2, 3, 5, 7, 11, 13, 17… El 6 no es primo, porque también lo dividen 2 y 3.</dd>
+
+  <dt>Factorizar</dt>
+  <dd>Partir un número en el producto de sus primos.
+  <code>30 = 2 × 3 × 5</code>. Todo número se puede partir así de una sola
+  manera, y ese es el hecho más importante de toda la aritmética.</dd>
+
+  <dt>Libre de cuadrados</dt>
+  <dd>Un número en cuya factorización <b>ningún primo se repite</b>. El 30
+  (= 2×3×5) es libre de cuadrados. El 12 (= 2×2×3) <b>no</b>, porque el 2
+  aparece dos veces. Acá trabajamos sólo con los libres de cuadrados, para que
+  cada ingrediente entre una sola vez.</dd>
+
+  <dt>Resto</dt>
+  <dd>Lo que sobra al dividir. <code>17 ÷ 5</code> da 3 y sobran 2: el resto es
+  2. Se escribe <code>17 ≡ 2 (mod 5)</code>, y se lee «17 deja resto 2 al
+  dividir por 5». Es la misma idea del reloj: a las 23 más 3 horas son las 2.</dd>
+</dl>
+</div>
+
+<h2 id="receta"><span class="num">3</span>La receta, paso a paso</h2>
+
+<p>Cuatro pasos, siempre los mismos.</p>
+
+<figure>
+  <img src="../figures/recipe.es.svg" alt="Diagrama en cuatro pasos: se toman los primos 3 y 5 del número 15, a cada uno se le suma 7 dando 10 y 12, se multiplican dando 120, y 120 dividido 15 da 8 exacto.">
+  <figcaption><b>Figura 1.</b> La receta completa con <code>n = 15</code> y
+  <code>b = 7</code>. Se factoriza, se suma <code>b</code> a cada primo, se
+  multiplica todo, y se pregunta si el número original divide al resultado.
+  Acá sí: <code>120 = 15 × 8</code>.</figcaption>
+</figure>
+
+<p>Hay una manera más cómoda de mirarlo, y es la que usamos para todo lo demás.
+En vez de multiplicar todo y después dividir, se puede revisar
+<b>primo por primo</b>:</p>
+
+<div class="box def">
+  <p style="margin:0"><b>La regla equivalente:</b> cada primo del número tiene
+  que dividir a la suma de <b>alguno</b> de los primos del número — puede ser la
+  suma de otro, o la suya propia.</p>
+</div>
+
+<p>Con el 15 y <code>b = 7</code>: el 3 divide a <code>5 + 7 = 12</code> ✓, y el
+5 divide a <code>3 + 7 = 10</code> ✓. Los dos están cubiertos, así que el 15
+entra. Se dice que <b>se cubren mutuamente</b>.</p>
+
+<figure>
+  <img src="../figures/covering.es.svg" alt="A la izquierda, 15 = 3 × 5 funciona: una flecha va de 3 a 5 y otra de 5 a 3. A la derecha, 21 = 3 × 7 falla: el 7 se cubre solo, pero al 3 no lo cubre nadie.">
+  <figcaption><b>Figura 2.</b> Quién cubre a quién. A la izquierda todos tienen
+  quien los cubra. A la derecha, el 7 se cubre a sí mismo (divide a
+  <code>7+7=14</code>) pero <b>al 3 no lo cubre nadie</b>, y con que quede uno
+  solo afuera ya alcanza para que el número no entre.</figcaption>
+</figure>
+
+<h2 id="probalo"><span class="num">4</span>Probalo vos antes de seguir</h2>
+
+<div class="box try">
+  <span class="tag g">Ejercicio · dos minutos y una hoja</span>
+  <p>Tomá <code>b = 3</code> y probá si el <b>10</b> entra en la bolsa.</p>
+  <p>Pista: <code>10 = 2 × 5</code>. Sumale 3 a cada primo. Multiplicá.
+  Dividí por 10.</p>
+  <p><b>Respuesta:</b> <code>2+3 = 5</code> y <code>5+3 = 8</code>;
+  <code>5 × 8 = 40</code>; <code>40 ÷ 10 = 4</code>, exacto. <b>El 10 entra.</b>
+  Y si lo mirás con la regla de cubrir: al 2 lo cubre el 5 (porque 2 divide a 8)
+  y al 5 lo cubre el 2 (porque 5 divide a 5).</p>
+</div>
+
+<p>Si te salió, ya entendés el objeto entero. Todo lo que sigue es
+<b>contar</b>: cuántos números como el 10 hay para cada <code>b</code>.</p>
+
+<h2 id="origen"><span class="num">5</span>De dónde sale la información</h2>
+
+<p>Esta es la parte que casi nunca se cuenta, y es la que hace que se le pueda
+creer a lo demás. Acá nadie opinó: <b>todo lo que se afirma salió de un
+programa, y el programa está publicado</b>.</p>
+
+<ul class="plain">
+  <li>Se escribió un programa que, dado un <code>b</code>, encuentra
+  <b>todos</b> los números de la bolsa. No una parte: todos, sin límite
+  superior. Eso se puede porque uno de los hallazgos demuestra que la lista se
+  termina (lo vemos en la sección 6).</li>
+  <li>Se corrió para los <span data-fact="odd_b_count">1001</span> valores
+  impares de <code>b</code> desde 1 hasta
+  <span data-fact="max_b">2001</span>.</li>
+  <li>Los resultados quedaron en archivos de datos que se regeneran con un solo
+  comando. <b>Ningún número de esta página fue escrito a mano</b>: si el dato
+  cambia, la página falla su propia comprobación.</li>
+  <li>Y todo se comprobó dos veces, con dos programas distintos que no comparten
+  el método (sección 7).</li>
+</ul>
+
+<h2 id="hallazgos"><span class="num">6</span>Lo que encontramos</h2>
+
+<h3>a) La lista siempre se termina, y sabemos dónde</h3>
+
+<p>Podría pasar que una bolsa tuviera infinitos números. No pasa. Se demuestra
+que <b>ningún primo de ningún número de la bolsa puede pasarse de
+<code>b + 2</code></b>.</p>
+
+<p>La razón cabe en tres renglones. Si un primo grande <code>p</code> divide a
+<code>q + b</code>, y <code>q</code> es más chico que <code>p</code>, entonces
+<code>q + b</code> es más chico que <code>2p</code>, así que
+<code>q + b</code> tiene que ser <b>exactamente</b> <code>p</code>. Ahora bien:
+si <code>b</code> es impar y <code>q</code> también, la suma da par, y ningún
+primo grande es par. Así que <code>q</code> sólo puede ser el 2, y entonces
+<code>p = b + 2</code>. Uno solo, y sabemos cuál.</p>
+
+<div class="box warn">
+  <span class="tag a">Honestidad</span>
+  <p>Este razonamiento, para el caso <code>b = 1</code>, <b>ya se conocía</b>:
+  es la demostración clásica de que 6 es el único número libre de cuadrados que
+  divide a la suma de sus divisores. No lo inventamos nosotros y así está dicho
+  en el trabajo. Lo que no encontramos publicado es la familia entera, para
+  cualquier <code>b</code>.</p>
+</div>
+
+<h3>b) Sólo importa el resto: el reloj</h3>
+
+<p>Este es el hallazgo que ordena todo lo demás. Si querés saber si un número
+entra en la bolsa de <code>b</code>, <b>no hace falta mirar <code>b</code>: sólo
+su resto</b>.</p>
+
+<p>Para el 6, por ejemplo, los restos que sirven son 0, 1, 3 y 4. Entonces el 6
+entra para <code>b = 1</code>, y también para 7, 13, 19, 25, 31… todos los que
+dejan resto 1 al dividir por 6. Sin excepciones y sin necesidad de probarlos.</p>
+
+<figure>
+  <img src="../figures/clock.es.svg" alt="Un reloj de seis posiciones numeradas de 0 a 5; las posiciones 0, 1, 3 y 4 están marcadas en verde y las 2 y 5 apagadas.">
+  <figcaption><b>Figura 3.</b> El reloj del 6. De los seis restos posibles,
+  cuatro sirven. Como todo <code>b</code> deja alguno de esos seis restos, con
+  este reloj queda decidido el caso para <b>todos</b> los <code>b</code> del
+  mundo, que son infinitos.</figcaption>
+</figure>
+
+<p>Y hay una fórmula que dice, para cualquier número, cuántas posiciones del
+reloj sirven: se multiplica, primo por primo, la cantidad de restos distintos
+que dejan sus propios primos. Para el 210 da
+<span data-fact="classes_210">72</span> posiciones de 210. Se comprobó contra la
+definición para <b>todos</b> los números libres de cuadrados hasta 1000, sin una
+sola discrepancia.</p>
+
+<h3>c) Cuando hay sólo dos primos, hay fórmula</h3>
+
+<p>Si el número tiene exactamente dos primos, la condición se cierra en una
+cuenta muy simple. Cuando ninguno de los dos divide a <code>b</code>, resulta
+que <code>(p − 1) × (q − 1)</code> tiene que dar <code>b + 1</code>.</p>
+
+<div class="calc">b = 7   →   b + 1 = 8   →   8 = 2 × 4   →   p = 3, q = 5   →   <b>n = 15</b> ✓</div>
+
+<p>O sea que en vez de probar primos uno por uno, <b>se factoriza un solo
+número</b> y salen todas las respuestas juntas. Es la diferencia entre buscar
+una llave probando todas las cerraduras y leer el número grabado en la llave.</p>
+
+<h3>d) El salto que no existía</h3>
+
+<p>Este resultado empezó por un error propio, y vale la pena contarlo porque es
+la parte más instructiva.</p>
+
+<p>Se conocían los tamaños de las bolsas para <code>b</code> = 1, 3, 5, 7, 9 y
+11 — daban 1, 4, 6, 8, 8 y 12 — y también el de <code>b = 55</code>, que daba
+<span data-fact="size_55">220</span>. Parecía un <b>salto</b>: de 12 a 220. Y
+durante un tiempo se buscó qué lo causaba.</p>
+
+<p>No lo causaba nada, porque el salto no existía: <b>nadie había calculado los
+valores del medio</b>. Al calcularlos, <code>b = 39</code> ya daba
+<span data-fact="size_39">90</span> y <code>b = 63</code> daba
+<span data-fact="size_63">274</span>, más que el 55.</p>
+
+<figure>
+  <img src="../figures/counts.es.svg" alt="Gráfico de barras del tamaño de la bolsa para cada b impar de 1 a 63; la barra de 55 es alta pero las de 39 y 63 también lo son.">
+  <figcaption><b>Figura 4.</b> El tamaño de la bolsa para cada <code>b</code>
+  impar hasta 63. La barra de 55 llamaba la atención sólo porque las de al lado
+  nunca se habían dibujado.</figcaption>
+</figure>
+
+<div class="box warn">
+  <span class="tag a">La lección, que sirve fuera de la matemática</span>
+  <p>Un salto en los datos puede ser un descubrimiento o puede ser <b>un agujero
+  en lo que miraste</b>. Antes de explicar una rareza, conviene revisar si la
+  rareza es del mundo o del muestreo.</p>
+</div>
+
+<p>De paso quedó contestada la pregunta original: <b>no hay fórmula</b> para el
+tamaño de la bolsa en función de <code>b</code>, y ahora se sabe por qué. El
+reloj del punto (b) explica que la pertenencia mezcla el resto de <code>b</code>
+con la estructura completa del número, y esa mezcla no se deja resumir. Se ve
+en un ejemplo: <code>b = 61</code> da 24 y <code>b = 63</code> da 274, siendo
+vecinos.</p>
+
+<h2 id="comprobar"><span class="num">7</span>¿Y cómo sabemos que no nos equivocamos?</h2>
+
+<p>Porque cualquiera puede ejecutar un comando y verlo. El repositorio trae un
+programa que corre <span data-fact="checks">27</span> comprobaciones en unos
+cuatro segundos, sin instalar nada.</p>
+
+<p>Tres de esas comprobaciones merecen explicación, porque son las que
+distinguen un trabajo verificable de una afirmación:</p>
+
+<ul class="plain">
+  <li><b>Dos programas distintos, mismo resultado.</b> El conteo rápido se
+  compara contra un método bruto que prueba <b>todas</b> las combinaciones
+  posibles, una por una. Si los dos coinciden en 35 casos distintos, es muy
+  difícil que los dos estén mal de la misma manera.</li>
+  <li><b>Un control externo.</b> Es la comprobación más importante y la idea es
+  vieja como la ciencia: <b>recalcular algo que ya sabía otra persona</b>. El
+  programa reconstruye desde cero una lista de números publicada por terceros
+  (la sucesión A187778 de la enciclopedia OEIS) y verifica que le da igual. Si
+  nuestro método estuviera roto, esa lista saldría mal.</li>
+  <li><b>Los números de esta misma página.</b> Cada cifra que leíste acá está
+  marcada en el archivo y se compara contra los datos recalculados. Si mañana
+  alguien mejora un dato y se olvida de actualizar esta explicación,
+  <b>la comprobación falla</b>. Esta página no puede envejecer en silencio.</li>
+</ul>
+
+<h2 id="sirve"><span class="num">8</span>¿Para qué sirve?</h2>
+
+<p>Con honestidad: esto no cura nada ni acelera tu teléfono. Es matemática
+elemental, y su utilidad es la de casi toda la matemática elemental — que es
+mucha, pero indirecta:</p>
+
+<ul class="plain">
+  <li><b>Convierte una búsqueda en una cuenta.</b> Antes, para saber qué números
+  entraban había que probarlos. Ahora, para dos primos, se factoriza un solo
+  número y salen todos. Ese cambio —de buscar a calcular— es el que hace
+  avanzar a la computación.</li>
+  <li><b>Da un ejemplo limpio para aprender.</b> El objeto es lo bastante simple
+  para explicarse en una hoja y lo bastante rico para que aparezcan una cota, un
+  argumento de paridad, el teorema del resto chino y un conteo exacto. Sirve
+  como ejercicio real, no de juguete.</li>
+  <li><b>Deja preguntas abiertas.</b> Un resultado que no abre ninguna pregunta
+  nueva suele ser una casilla llena, no un hilo tirado. Éste dejó cinco, y están
+  escritas en el repositorio.</li>
+</ul>
+
+<h2 id="nodice"><span class="num">9</span>Lo que esto NO dice</h2>
+
+<p>Un trabajo honesto marca sus propios bordes. Estos son:</p>
+
+<table>
+<tr><th>No dice</th><th>Por qué</th></tr>
+<tr><td>Que el caso <code>b = 1</code> sea nuevo</td>
+    <td>Es clásico, y la demostración es la misma de siempre. Está declarado en el trabajo.</td></tr>
+<tr><td>Que nadie haya sabido esto antes</td>
+    <td>Buscamos en OEIS, en cuatro bases bibliográficas, en Zenodo, en DataCite y en la web, y anotamos exactamente qué buscamos. <b>No encontrarlo no es lo mismo que probar que no existe.</b></td></tr>
+<tr><td>Nada sobre <code>b</code> par</td>
+    <td>Ahí la bolsa puede ser infinita, y decidirlo choca con un problema abierto de la matemática. No se tocó.</td></tr>
+<tr><td>Una fórmula del tamaño</td>
+    <td>Se muestra que no la hay en el sentido elemental, y se explica por qué. Eso es distinto de tenerla.</td></tr>
+<tr><td>Cómo sigue la tabla más allá de 2001</td>
+    <td>Hasta ahí se calculó. Lo que no se calculó, no se afirma.</td></tr>
+</table>
+
+<h2 id="glosario">Glosario</h2>
+
+<div class="scroll">
+<table>
+<tr><th>Palabra</th><th>Qué quiere decir</th><th>Ejemplo</th></tr>
+<tr><td>Primo</td><td>Sólo lo dividen 1 y él mismo</td><td class="n">2, 3, 5, 7, 11</td></tr>
+<tr><td>Divide a</td><td>La división da exacta</td><td class="n">3 | 12</td></tr>
+<tr><td>Factorizar</td><td>Partir en producto de primos</td><td class="n">30 = 2×3×5</td></tr>
+<tr><td>Libre de cuadrados</td><td>Ningún primo se repite</td><td class="n">30 sí, 12 no</td></tr>
+<tr><td>Resto (módulo)</td><td>Lo que sobra al dividir</td><td class="n">17 ≡ 2 (mod 5)</td></tr>
+<tr><td>Radical</td><td>El producto de los primos distintos</td><td class="n">rad(12) = 6</td></tr>
+<tr><td>σ(n)</td><td>La suma de todos los divisores</td><td class="n">σ(6) = 1+2+3+6 = 12</td></tr>
+<tr><td>φ(n)</td><td>Cuántos números menores no comparten factor</td><td class="n">φ(6) = 2</td></tr>
+<tr><td>S<sub>b</sub></td><td>La bolsa de este trabajo</td><td class="n">15 ∈ S₇</td></tr>
+</table>
+</div>
+
+<h2 id="biblio">Para seguir leyendo</h2>
+
+<div class="refs">
+
+<h3>Nivel 1 — si esto te gustó y querés más, sin fórmulas</h3>
+<ol>
+  <li>Wikipedia, <a href="https://es.wikipedia.org/wiki/N%C3%BAmero_primo">Número primo</a>.
+      <span class="why">El punto de partida: qué son y por qué son los ladrillos de todo.</span></li>
+  <li>Wikipedia, <a href="https://es.wikipedia.org/wiki/Teorema_fundamental_de_la_aritm%C3%A9tica">Teorema fundamental de la aritmética</a>.
+      <span class="why">El hecho que usamos todo el tiempo: cada número se factoriza de una sola manera.</span></li>
+  <li>Wikipedia, <a href="https://es.wikipedia.org/wiki/Aritm%C3%A9tica_modular">Aritmética modular</a>.
+      <span class="why">La matemática del reloj de la Figura 3, que es la idea central del trabajo.</span></li>
+  <li>OEIS Foundation, <a href="https://oeis.org/">La Enciclopedia en línea de sucesiones de enteros</a>.
+      <span class="why">Un catálogo con más de 380.000 sucesiones. Si encontrás una sucesión de números, acá averiguás si ya se conocía. Es literalmente el árbitro que usamos.</span></li>
+</ol>
+
+<h3>Nivel 2 — un libro de texto, para estudiarlo en serio</h3>
+<ol start="5">
+  <li>D. M. Burton, <i>Elementary Number Theory</i>, McGraw-Hill, 7.ª ed., 2010.
+      <span class="why">El más amable para empezar. Los capítulos de divisibilidad, congruencias y funciones aritméticas cubren todo lo que aparece acá.</span></li>
+  <li>G. H. Hardy y E. M. Wright, <i>An Introduction to the Theory of Numbers</i>, Oxford, 6.ª ed., 2008.
+      <span class="why">El clásico. Más exigente, y la referencia estándar para σ(n), φ(n) y el teorema del resto chino.</span></li>
+  <li>K. H. Rosen, <i>Elementary Number Theory and Its Applications</i>, Pearson, 6.ª ed., 2011.
+      <span class="why">Muchos ejercicios resueltos y una parte de aplicaciones a la criptografía.</span></li>
+</ol>
+
+<h3>Nivel 3 — los trabajos con los que este se compara</h3>
+<ol start="8">
+  <li>T. Freiberg, «Products of shifted primes simultaneously taking perfect power values», <i>Journal of the Australian Mathematical Society</i> 92 (2012), 145–154. <a href="https://arxiv.org/abs/1008.1978">arXiv:1008.1978</a>.
+      <span class="why">Estudia exactamente el mismo producto de primos desplazados, pero preguntando otra cosa: cuándo el resultado es una potencia perfecta.</span></li>
+  <li>P. Pollack y C. Pomerance, «Prime-perfect numbers», <i>INTEGERS</i> 12A (2012), artículo A14.
+      <span class="why">El caso b = 1 sin la restricción de libre de cuadrados, y una cota para cuántos hay hasta un tamaño dado.</span></li>
+  <li>OEIS, <a href="https://oeis.org/A187778">A187778</a>, «Numbers k dividing psi(k)».
+      <span class="why">La sucesión que el verificador recalcula desde cero como control externo.</span></li>
+  <li>OEIS, <a href="https://oeis.org/A005117">A005117</a> (libres de cuadrados) y <a href="https://oeis.org/A001615">A001615</a> (la función psi de Dedekind).
+      <span class="why">Las dos sucesiones básicas que aparecen en las definiciones.</span></li>
+</ol>
+
+<h3>Y el trabajo mismo</h3>
+<ol start="12">
+  <li>J. Ellena Godoy, «Squarefree integers dividing the product of their shifted prime divisors», 2026. DOI <a href="https://doi.org/10.5281/zenodo.22309175">10.5281/zenodo.22309175</a>.
+      <span class="why">Los enunciados, las demostraciones, los datos y el verificador. El archivo <code>PRIOR_ART.md</code> lista qué se buscó y dónde.</span></li>
+</ol>
+</div>
+
+<footer>
+  <p><b>Cómo comprobarlo vos mismo.</b> Descargá el repositorio y ejecutá
+  <code>python verify.py</code>. No hace falta instalar nada y tarda unos
+  segundos. Para rehacer los datos desde cero,
+  <code>python src/generate_data.py</code>; para rehacer las figuras de esta
+  página, <code>python src/make_figures.py</code>.</p>
+  <p>El diseño del sistema y la dirección de la investigación son del autor. Los
+  resultados matemáticos fueron producidos por un sistema automatizado (Claude,
+  Anthropic) bajo esa dirección. Todos los cómputos fueron verificados por dos
+  implementaciones independientes y cruzados contra trabajo publicado. El autor
+  es responsable de la corrección de todo lo publicado acá.</p>
+  <p>Texto y figuras bajo licencia CC BY 4.0 · código bajo licencia MIT ·
+  Jorge Ellena Godoy, 2026</p>
+</footer>
+
+</div>
+</body>
+</html>

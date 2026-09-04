@@ -8,10 +8,14 @@ For an integer `b`, let
 is **6**, which is classical and **not claimed here**. `b = -1` gives
 `n | phi(n)`. This repository is about what happens for general `b`.
 
+> **New to this? Start here:** [**Explained from scratch**](https://jorgell23-sys.github.io/squarefree-shifted-prime-products/) — the whole
+> thing in plain words, with pictures and no background needed
+> ([en español](https://jorgell23-sys.github.io/squarefree-shifted-prime-products/es/)).
+
 ```
 $ python verify.py
 ...
-20 passed, 0 failed
+27 passed, 0 failed
 ```
 
 No dependencies. About four seconds.
@@ -64,7 +68,8 @@ of `ω(b)`, nor of `π(b)`: the consecutive odd values 61 and 63 give **24** and
 |---|---|
 | [`RESULT.md`](RESULT.md) | statements, proofs, tables, and **what this does not claim** |
 | [`PRIOR_ART.md`](PRIOR_ART.md) | what was searched, where, with what terms — and the positive control that **failed**, plus the one that worked |
-| `verify.py` | 20 checks, no dependencies, ~4 s |
+| `verify.py` | 27 checks, no dependencies, ~4 s |
+| [`docs/`](https://jorgell23-sys.github.io/squarefree-shifted-prime-products/) | the **explainer page**: the same story from scratch, for anyone |
 | `src/` | standalone implementation, standard library only |
 | `data/` | generated entirely by `src/generate_data.py`; no number typed by hand |
 

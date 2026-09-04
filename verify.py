@@ -8,6 +8,7 @@ Exit code 0 if everything passes, 1 otherwise.
 """
 import json
 import os
+import re
 import sys
 from math import gcd
 
@@ -209,6 +210,73 @@ def structure():
     check(not bad, "2p in S_b for every p | b+2, and p in S_b for every p | b")
 
 
+def explainer():
+    """The explainer page cannot go stale in silence.
+
+    Every live number in `docs/*.html` is tagged `data-fact="..."`, and this
+    compares each one against the recomputed data. The figures are compared
+    against what their generator produces right now, character for character.
+    So if a datum improves and the explanation is not updated, THIS FAILS --
+    which is the whole point: a rule written in prose gets broken again.
+    """
+    print("")
+    print("== the explainer page is in sync with the data ==")
+    here = os.path.dirname(os.path.abspath(__file__))
+    rows = data("counts.json")
+    by_b = {r["b"]: r["size"] for r in rows}
+    expected = {
+        "odd_b_count": len(rows),
+        "max_b": rows[-1]["b"],
+        "classes_210": S.class_count(210),
+        "size_55": by_b[55],
+        "size_39": by_b[39],
+        "size_63": by_b[63],
+    }
+    pages = [os.path.join("docs", "index.html"),
+             os.path.join("docs", "es", "index.html")]
+    for page in pages:
+        path = os.path.join(here, page)
+        if not os.path.exists(path):
+            check(False, "%s exists" % page)
+            continue
+        with open(path, encoding="utf-8") as fh:
+            html = fh.read()
+        facts = dict(re.findall(r'data-fact="([a-z_0-9]+)">([^<]+)<', html))
+        wrong = {k: (facts.get(k), str(v)) for k, v in expected.items()
+                 if facts.get(k) != str(v)}
+        check(not wrong, "%s: every tagged number matches the data%s"
+              % (page, "" if not wrong else " -- %s" % wrong))
+        missing = [src for src in re.findall(r'<img src="([^"]+)"', html)
+                   if not os.path.exists(os.path.normpath(
+                       os.path.join(os.path.dirname(path), src)))]
+        check(not missing, "%s: every figure it references exists%s"
+              % (page, "" if not missing else " -- missing %s" % missing))
+
+    sys.path.insert(0, os.path.join(here, "src"))
+    import make_figures as MF
+    stale = []
+    for name, fn in (("recipe", MF.fig_recipe), ("covering", MF.fig_covering),
+                     ("clock", MF.fig_clock)):
+        for es, suf in ((False, ""), (True, ".es")):
+            f = os.path.join(here, "docs", "figures", "%s%s.svg" % (name, suf))
+            if not os.path.exists(f):
+                stale.append(os.path.basename(f))
+                continue
+            with open(f, encoding="utf-8") as fh:
+                if fh.read() != fn(es=es):
+                    stale.append(os.path.basename(f))
+    for es, suf in ((False, ""), (True, ".es")):
+        f = os.path.join(here, "docs", "figures", "counts%s.svg" % suf)
+        if not os.path.exists(f):
+            stale.append(os.path.basename(f))
+            continue
+        with open(f, encoding="utf-8") as fh:
+            if fh.read() != MF.fig_counts(rows, es=es):
+                stale.append(os.path.basename(f))
+    check(not stale, "the 8 figures are what their generator produces today%s"
+          % ("" if not stale else " -- stale: %s" % stale))
+
+
 def main():
     external_control()
     lemma_B()
@@ -217,6 +285,24 @@ def main():
     counting()
     published_table()
     structure()
+    explainer()
+    #: **Autorreferencial a propósito.** La página anuncia cuántos controles
+    #: corre este archivo; si se agrega uno y no se actualiza el texto, la
+    #: cuenta deja de cerrar y la verificación falla. Se mide al final, con el
+    #: total ya conocido, sumando los que este mismo bloque va a agregar.
+    total = PASSED + len(FAILED) + 2
+    here = os.path.dirname(os.path.abspath(__file__))
+    for page in (os.path.join("docs", "index.html"),
+                 os.path.join("docs", "es", "index.html")):
+        path = os.path.join(here, page)
+        if not os.path.exists(path):
+            check(False, "%s exists" % page)
+            continue
+        with open(path, encoding="utf-8") as fh:
+            m = re.search(r'data-fact="checks">([^<]+)<', fh.read())
+        check(m is not None and int(m.group(1)) == total,
+              "%s: the number of checks it announces is right (%s, expected %d)"
+              % (page, m.group(1) if m else "absent", total))
     print("\n%d passed, %d failed" % (PASSED, len(FAILED)))
     for f in FAILED:
         print("  - " + f)

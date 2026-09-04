@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numbers that get along with their primes — explained from scratch</title>
+<meta name="description" content="What the sets S_b are, where the data came from, how it was checked and what it is good for, explained from scratch for anyone who can divide.">
+<style>
+:root{
+  --ink:#1f2933; --soft:#52606d; --mute:#7b8794; --line:#d9e0e6;
+  --bg:#fbfbf9; --card:#ffffff; --blue:#2f6fb5; --green:#2e7d52;
+  --amber:#a8700f; --red:#c0442e; --sel:#e8f0fa;
+  --serif:Georgia,'Iowan Old Style','Palatino Linotype',Palatino,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#e4e7eb;--soft:#cbd2d9;--mute:#9aa5b1;--line:#3e4c59;
+        --bg:#12171c;--card:#1a2027;--blue:#7aaee0;--green:#6ec295;
+        --amber:#e0a63f;--red:#e08272;--sel:#1e2a38;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font-family:var(--serif);font-size:19px;line-height:1.72}
+.wrap{max-width:50rem;margin:0 auto;padding:0 1.25rem 6rem}
+header.top{padding:3.5rem 0 2rem;border-bottom:3px double var(--line);margin-bottom:2rem}
+.kicker{font-family:var(--sans);font-size:.75rem;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--mute);margin:0 0 .9rem}
+h1{font-size:2.35rem;line-height:1.18;margin:0 0 .8rem;letter-spacing:-.015em}
+.sub{font-size:1.12rem;color:var(--soft);margin:0}
+.byline{font-family:var(--sans);font-size:.82rem;color:var(--mute);margin-top:1.6rem}
+h2{font-family:var(--sans);font-size:1.42rem;line-height:1.3;margin:3.2rem 0 .4rem;
+   letter-spacing:-.01em;scroll-margin-top:1rem}
+h2 .num{color:var(--mute);font-weight:600;margin-right:.5rem}
+h3{font-family:var(--sans);font-size:1.08rem;margin:2rem 0 .3rem}
+p{margin:0 0 1.15rem}
+a{color:var(--blue)}
+strong{font-weight:700}
+.lead{font-size:1.08rem;color:var(--soft)}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:12px;
+        padding:1.2rem 1.5rem;margin:0 0 2rem;font-family:var(--sans);font-size:.95rem}
+nav.toc p{font-weight:700;margin:0 0 .6rem;font-size:.8rem;letter-spacing:.1em;
+          text-transform:uppercase;color:var(--mute)}
+nav.toc ol{margin:0;padding-left:1.3rem;line-height:1.85}
+figure{margin:2rem 0;padding:0}
+figure img{width:100%;height:auto;display:block;background:var(--card);
+           border:1px solid var(--line);border-radius:12px;padding:.75rem}
+figcaption{font-family:var(--sans);font-size:.86rem;color:var(--mute);
+           margin-top:.7rem;line-height:1.55}
+figcaption b{color:var(--soft)}
+.box{border-radius:12px;padding:1.15rem 1.4rem;margin:1.8rem 0;
+     font-family:var(--sans);font-size:.97rem;line-height:1.65}
+.def{background:var(--sel);border:1px solid var(--line)}
+.def dt{font-weight:700;margin-top:.7rem}
+.def dt:first-child{margin-top:0}
+.def dd{margin:.15rem 0 0;color:var(--soft)}
+.try{background:var(--card);border:1px solid var(--green);border-left:5px solid var(--green)}
+.try p:first-child{margin-top:0}
+.try p:last-child{margin-bottom:0}
+.warn{background:var(--card);border:1px solid var(--amber);border-left:5px solid var(--amber)}
+.warn p:last-child{margin-bottom:0}
+.tag{display:inline-block;font-family:var(--sans);font-size:.7rem;font-weight:700;
+     letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.tag.g{color:var(--green)} .tag.a{color:var(--amber)} .tag.b{color:var(--blue)}
+.calc{font-family:var(--mono);font-size:.94rem;background:var(--card);
+      border:1px solid var(--line);border-radius:10px;padding:.9rem 1.1rem;
+      margin:1.2rem 0;overflow-x:auto;line-height:1.9}
+code{font-family:var(--mono);font-size:.9em;background:var(--sel);
+     padding:.1em .35em;border-radius:4px}
+.calc code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);
+      font-size:.92rem;margin:1.5rem 0}
+th,td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--line);
+      vertical-align:top}
+th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+td.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow-x:auto}
+ul.plain{list-style:none;padding-left:0}
+ul.plain li{padding-left:1.4rem;position:relative;margin-bottom:.6rem}
+ul.plain li::before{content:"\2192";position:absolute;left:0;color:var(--mute)}
+.refs{font-family:var(--sans);font-size:.93rem}
+.refs h3{margin-top:1.6rem}
+.refs ol{padding-left:1.3rem}
+.refs li{margin-bottom:.8rem;line-height:1.6}
+.refs .why{color:var(--mute);display:block;font-size:.87rem}
+footer{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--line);
+       font-family:var(--sans);font-size:.85rem;color:var(--mute)}
+.lang{font-family:var(--sans);font-size:.85rem;margin-bottom:1.5rem}
+@media (max-width:640px){
+  body{font-size:17px}
+  h1{font-size:1.8rem}
+  .wrap{padding:0 1rem 4rem}
+}
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  nav.toc,.lang{display:none}
+  h2{page-break-after:avoid}
+  figure{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="kicker">Explained from scratch · no background needed</p>
+  <h1>Numbers that get along with their primes</h1>
+  <p class="sub">What the sets <b>S<sub>b</sub></b> are, where the data came
+  from, how it was checked, and what it is good for. If you can divide and you
+  remember what a prime number is, that is enough.</p>
+  <p class="byline">Jorge Ellena Godoy · 2026 ·
+  <a href="es/index.html">Versión en español</a> ·
+  <a href="https://github.com/jorgell23-sys/squarefree-shifted-prime-products">repository</a></p>
+</header>
+
+<nav class="toc">
+  <p>On this page</p>
+  <ol>
+    <li><a href="#question">The question, in plain words</a></li>
+    <li><a href="#words">The five words you need</a></li>
+    <li><a href="#recipe">The recipe, step by step</a></li>
+    <li><a href="#try">Try it yourself before reading on</a></li>
+    <li><a href="#origin">Where the data comes from</a></li>
+    <li><a href="#findings">What we found</a></li>
+    <li><a href="#checking">How do we know we did not get it wrong?</a></li>
+    <li><a href="#useful">What is it good for?</a></li>
+    <li><a href="#notclaim">What this does NOT say</a></li>
+    <li><a href="#glossary">Glossary</a> · <a href="#biblio">Further reading</a></li>
+  </ol>
+</nav>
+
+<h2 id="question"><span class="num">1</span>The question, in plain words</h2>
+
+<p class="lead">Every whole number is built out of primes, the way a recipe is
+built out of ingredients. 15 is built from 3 and 5. 21, from 3 and 7. 30, from
+2, 3 and 5.</p>
+
+<p>Imagine each ingredient contributes something to the dish. We ask every prime
+to contribute <b>itself plus a fixed number</b>, which we will call
+<code>b</code>. If <code>b</code> is 7, then the prime 3 contributes
+<code>3 + 7 = 10</code>, and the prime 5 contributes <code>5 + 7 = 12</code>.</p>
+
+<p>Then we multiply everything they contributed: <code>10 × 12 = 120</code>.</p>
+
+<p>And here is the question, which is a single one:</p>
+
+<div class="box def">
+  <p style="margin:0"><b>Does the original number fit exactly into what its own
+  primes contributed?</b> That is: can 120 be divided by 15 with nothing left
+  over?</p>
+</div>
+
+<p>It can: <code>120 ÷ 15 = 8</code>, exactly, nothing left over. When that
+happens we say the number <b>gets along with its primes</b>, and we drop it into
+a bag called <b>S<sub>7</sub></b> — the bag of numbers that work when
+<code>b</code> is 7.</p>
+
+<p>21 does not manage it. Its primes are 3 and 7; they contribute
+<code>3+7 = 10</code> and <code>7+7 = 14</code>; the product is
+<code>10 × 14 = 140</code>; and <code>140 ÷ 21</code> is 6 with 14 left over.
+<b>It does not fit.</b> 21 stays out of the bag.</p>
+
+<p>That is the whole object of study. Change <code>b</code> and you change the
+bag: there is one bag per <code>b</code>. And the question this work answers is
+<b>how many numbers are in each bag, and why</b>.</p>
+
+<h2 id="words"><span class="num">2</span>The five words you need</h2>
+
+<p>These five, and no more. Each with a small example.</p>
+
+<div class="box def">
+<dl>
+  <dt>Divides</dt>
+  <dd>"3 divides 12" means <code>12 ÷ 3</code> comes out exact, no remainder.
+  Written <code>3 | 12</code>. By contrast 5 does <b>not</b> divide 12, because
+  2 is left over.</dd>
+
+  <dt>Prime number</dt>
+  <dd>A number bigger than 1 that can only be divided by 1 and by itself:
+  2, 3, 5, 7, 11, 13, 17… 6 is not prime, because 2 and 3 divide it too.</dd>
+
+  <dt>Factoring</dt>
+  <dd>Breaking a number into a product of primes.
+  <code>30 = 2 × 3 × 5</code>. Every number breaks up this way in exactly one
+  way, and that is the single most important fact in all of arithmetic.</dd>
+
+  <dt>Squarefree</dt>
+  <dd>A number in whose factorization <b>no prime repeats</b>. 30 (= 2×3×5) is
+  squarefree. 12 (= 2×2×3) is <b>not</b>, because 2 shows up twice. Here we work
+  only with squarefree numbers, so each ingredient enters exactly once.</dd>
+
+  <dt>Remainder</dt>
+  <dd>What is left over after dividing. <code>17 ÷ 5</code> is 3 with 2 left
+  over: the remainder is 2. Written <code>17 ≡ 2 (mod 5)</code>. It is the idea
+  of a clock: three hours after 23:00 it is 02:00.</dd>
+</dl>
+</div>
+
+<h2 id="recipe"><span class="num">3</span>The recipe, step by step</h2>
+
+<p>Four steps, always the same.</p>
+
+<figure>
+  <img src="figures/recipe.svg" alt="A four-step diagram: take the primes 3 and 5 of the number 15, add 7 to each giving 10 and 12, multiply them giving 120, and 120 divided by 15 is exactly 8.">
+  <figcaption><b>Figure 1.</b> The whole recipe with <code>n = 15</code> and
+  <code>b = 7</code>. Factor, add <code>b</code> to each prime, multiply
+  everything, and ask whether the original number divides the result. Here it
+  does: <code>120 = 15 × 8</code>.</figcaption>
+</figure>
+
+<p>There is a handier way to look at it, and it is the one we use for everything
+that follows. Instead of multiplying everything and then dividing, you can check
+<b>prime by prime</b>:</p>
+
+<div class="box def">
+  <p style="margin:0"><b>The equivalent rule:</b> every prime of the number must
+  divide the contribution of <b>some</b> prime of the number — someone else's,
+  or its own.</p>
+</div>
+
+<p>With 15 and <code>b = 7</code>: 3 divides <code>5 + 7 = 12</code> ✓, and 5
+divides <code>3 + 7 = 10</code> ✓. Both are covered, so 15 is in. We say they
+<b>cover each other</b>.</p>
+
+<figure>
+  <img src="figures/covering.svg" alt="On the left, 15 = 3 × 5 works: an arrow goes from 3 to 5 and another from 5 to 3. On the right, 21 = 3 × 7 fails: 7 covers itself, but nothing covers 3.">
+  <figcaption><b>Figure 2.</b> Who covers whom. On the left everyone has someone
+  to cover them. On the right, 7 covers itself (it divides
+  <code>7+7=14</code>) but <b>nothing covers 3</b>, and one prime left out is
+  already enough for the number to fail.</figcaption>
+</figure>
+
+<h2 id="try"><span class="num">4</span>Try it yourself before reading on</h2>
+
+<div class="box try">
+  <span class="tag g">Exercise · two minutes and a sheet of paper</span>
+  <p>Take <code>b = 3</code> and check whether <b>10</b> goes in the bag.</p>
+  <p>Hint: <code>10 = 2 × 5</code>. Add 3 to each prime. Multiply. Divide by
+  10.</p>
+  <p><b>Answer:</b> <code>2+3 = 5</code> and <code>5+3 = 8</code>;
+  <code>5 × 8 = 40</code>; <code>40 ÷ 10 = 4</code>, exact. <b>10 is in.</b>
+  And with the covering rule: 5 covers 2 (because 2 divides 8) and 2 covers 5
+  (because 5 divides 5).</p>
+</div>
+
+<p>If you got that, you already understand the whole object. Everything that
+follows is <b>counting</b>: how many numbers like 10 there are for each
+<code>b</code>.</p>
+
+<h2 id="origin"><span class="num">5</span>Where the data comes from</h2>
+
+<p>This is the part that almost never gets told, and it is the part that makes
+the rest believable. Nobody gave an opinion here: <b>everything claimed came out
+of a program, and the program is published</b>.</p>
+
+<ul class="plain">
+  <li>A program was written that, given a <code>b</code>, finds <b>all</b> the
+  numbers in the bag. Not some of them: all, with no upper limit. That is
+  possible because one of the findings proves the list ends (section 6).</li>
+  <li>It was run for the <span data-fact="odd_b_count">1001</span> odd values of
+  <code>b</code> from 1 to <span data-fact="max_b">2001</span>.</li>
+  <li>The results went into data files that regenerate with a single command.
+  <b>No number on this page was typed by hand</b>: if the data changes, the page
+  fails its own check.</li>
+  <li>And everything was checked twice, by two different programs that do not
+  share a method (section 7).</li>
+</ul>
+
+<h2 id="findings"><span class="num">6</span>What we found</h2>
+
+<h3>a) The list always ends, and we know where</h3>
+
+<p>A bag could in principle hold infinitely many numbers. It does not. One can
+prove that <b>no prime of any number in the bag can exceed
+<code>b + 2</code></b>.</p>
+
+<p>The reason fits in three lines. If a large prime <code>p</code> divides
+<code>q + b</code>, and <code>q</code> is smaller than <code>p</code>, then
+<code>q + b</code> is smaller than <code>2p</code>, so <code>q + b</code> must
+be <b>exactly</b> <code>p</code>. But now: if <code>b</code> is odd and
+<code>q</code> is odd too, the sum is even, and no large prime is even. So
+<code>q</code> can only be 2, and then <code>p = b + 2</code>. One single
+possibility, and we know which.</p>
+
+<div class="box warn">
+  <span class="tag a">Honesty</span>
+  <p>This argument, for the case <code>b = 1</code>, <b>was already known</b>:
+  it is the classical proof that 6 is the only squarefree number dividing the
+  sum of its own divisors. We did not invent it and the work says so. What we
+  did not find published is the whole family, for arbitrary <code>b</code>.</p>
+</div>
+
+<h3>b) Only the remainder matters: the clock</h3>
+
+<p>This is the finding that organizes everything else. To know whether a number
+is in the bag of <code>b</code>, <b>you do not need <code>b</code> itself: only
+its remainder</b>.</p>
+
+<p>For 6, for instance, the remainders that work are 0, 1, 3 and 4. So 6 is in
+for <code>b = 1</code>, and also for 7, 13, 19, 25, 31… every value leaving
+remainder 1 when divided by 6. No exceptions, and no need to test them.</p>
+
+<figure>
+  <img src="figures/clock.svg" alt="A six-position clock numbered 0 to 5; positions 0, 1, 3 and 4 are marked green and 2 and 5 are dimmed.">
+  <figcaption><b>Figure 3.</b> The clock of 6. Of the six possible remainders,
+  four work. Since every <code>b</code> leaves one of those six remainders, this
+  clock settles the case for <b>all</b> values of <code>b</code>, which are
+  infinitely many.</figcaption>
+</figure>
+
+<p>And there is a formula giving, for any number, how many clock positions work:
+multiply, prime by prime, the number of distinct remainders left by its own
+primes. For 210 that gives <span data-fact="classes_210">72</span> positions out
+of 210. It was checked against the definition for <b>every</b> squarefree number
+up to 1000, without a single discrepancy.</p>
+
+<h3>c) With only two primes, there is a formula</h3>
+
+<p>If the number has exactly two primes, the condition closes into a very simple
+sum. When neither of the two divides <code>b</code>, it turns out that
+<code>(p − 1) × (q − 1)</code> must equal <code>b + 1</code>.</p>
+
+<div class="calc">b = 7   →   b + 1 = 8   →   8 = 2 × 4   →   p = 3, q = 5   →   <b>n = 15</b> ✓</div>
+
+<p>So instead of testing primes one by one, <b>you factor a single number</b>
+and every answer falls out at once. It is the difference between finding a key
+by trying every lock and reading the number stamped on the key.</p>
+
+<h3>d) The jump that was not there</h3>
+
+<p>This result started from a mistake of our own, and it is worth telling
+because it is the most instructive part.</p>
+
+<p>The bag sizes were known for <code>b</code> = 1, 3, 5, 7, 9 and 11 — they
+gave 1, 4, 6, 8, 8 and 12 — and also for <code>b = 55</code>, which gave
+<span data-fact="size_55">220</span>. It looked like a <b>jump</b>: from 12 to
+220. And for a while we looked for what caused it.</p>
+
+<p>Nothing caused it, because the jump did not exist: <b>nobody had computed the
+values in between</b>. Once computed, <code>b = 39</code> already gave
+<span data-fact="size_39">90</span> and <code>b = 63</code> gave
+<span data-fact="size_63">274</span>, more than 55 did.</p>
+
+<figure>
+  <img src="figures/counts.svg" alt="Bar chart of the bag size for each odd b from 1 to 63; the bar at 55 is tall but those at 39 and 63 are tall too.">
+  <figcaption><b>Figure 4.</b> The bag size for each odd <code>b</code> up to
+  63. The bar at 55 stood out only because the ones beside it had never been
+  drawn.</figcaption>
+</figure>
+
+<div class="box warn">
+  <span class="tag a">The lesson, and it applies outside mathematics</span>
+  <p>A jump in the data can be a discovery, or it can be <b>a hole in what you
+  looked at</b>. Before explaining an oddity, it is worth checking whether the
+  oddity belongs to the world or to the sampling.</p>
+</div>
+
+<p>That also answered the original question: <b>there is no formula</b> for the
+bag size as a function of <code>b</code>, and now we know why. The clock in (b)
+shows that membership mixes the remainder of <code>b</code> with the entire
+structure of the number, and that mixture does not compress. One example says
+it: <code>b = 61</code> gives 24 and <code>b = 63</code> gives 274, and they are
+neighbours.</p>
+
+<h2 id="checking"><span class="num">7</span>How do we know we did not get it wrong?</h2>
+
+<p>Because anyone can run one command and watch. The repository ships a program
+running <span data-fact="checks">27</span> checks in about four seconds, with
+nothing to install.</p>
+
+<p>Three of those checks deserve explaining, because they are what separates
+verifiable work from an assertion:</p>
+
+<ul class="plain">
+  <li><b>Two different programs, same answer.</b> The fast count is compared
+  against a brute-force method that tries <b>every</b> possible combination, one
+  by one. If both agree on 35 separate cases, it is very hard for both to be
+  wrong in the same way.</li>
+  <li><b>An external control.</b> This is the most important check and the idea
+  is as old as science: <b>recompute something somebody else already knew</b>.
+  The program rebuilds from scratch a list of numbers published by others
+  (sequence A187778 in the OEIS encyclopedia) and verifies it matches. If our
+  method were broken, that list would come out wrong.</li>
+  <li><b>The numbers on this very page.</b> Every figure you read here is
+  tagged in the file and compared against the recomputed data. If someone
+  improves a value tomorrow and forgets to update this explanation,
+  <b>the check fails</b>. This page cannot go stale quietly.</li>
+</ul>
+
+<h2 id="useful"><span class="num">8</span>What is it good for?</h2>
+
+<p>Honestly: this cures nothing and will not speed up your phone. It is
+elementary mathematics, and its usefulness is that of most elementary
+mathematics — considerable, but indirect:</p>
+
+<ul class="plain">
+  <li><b>It turns a search into a calculation.</b> Before, finding which numbers
+  qualified meant testing them. Now, for two primes, you factor a single number
+  and they all appear. That shift — from searching to computing — is what moves
+  computation forward.</li>
+  <li><b>It gives a clean example to learn from.</b> The object is simple enough
+  to explain on one page and rich enough to bring in a bound, a parity argument,
+  the Chinese remainder theorem and an exact count. It works as a real exercise,
+  not a toy one.</li>
+  <li><b>It leaves open questions.</b> A result that opens no new question is
+  usually a box ticked rather than a thread pulled. This one left five, and they
+  are written down in the repository.</li>
+</ul>
+
+<h2 id="notclaim"><span class="num">9</span>What this does NOT say</h2>
+
+<p>Honest work marks its own edges. These are ours:</p>
+
+<table>
+<tr><th>It does not say</th><th>Why</th></tr>
+<tr><td>That the case <code>b = 1</code> is new</td>
+    <td>It is classical, and the proof is the usual one. The work states this.</td></tr>
+<tr><td>That nobody knew any of this before</td>
+    <td>We searched OEIS, four bibliographic databases, Zenodo, DataCite and the web, and we wrote down exactly what we searched for. <b>Not finding something is not the same as proving it does not exist.</b></td></tr>
+<tr><td>Anything about even <code>b</code></td>
+    <td>There the bag may be infinite, and deciding it runs into an open problem. Not touched.</td></tr>
+<tr><td>A formula for the size</td>
+    <td>We show there is none in the elementary sense, and explain why. That is different from having one.</td></tr>
+<tr><td>How the table continues past 2001</td>
+    <td>That is how far it was computed. What was not computed is not claimed.</td></tr>
+</table>
+
+<h2 id="glossary">Glossary</h2>
+
+<div class="scroll">
+<table>
+<tr><th>Word</th><th>What it means</th><th>Example</th></tr>
+<tr><td>Prime</td><td>Only 1 and itself divide it</td><td class="n">2, 3, 5, 7, 11</td></tr>
+<tr><td>Divides</td><td>The division comes out exact</td><td class="n">3 | 12</td></tr>
+<tr><td>Factoring</td><td>Breaking into a product of primes</td><td class="n">30 = 2×3×5</td></tr>
+<tr><td>Squarefree</td><td>No prime repeats</td><td class="n">30 yes, 12 no</td></tr>
+<tr><td>Remainder (mod)</td><td>What is left after dividing</td><td class="n">17 ≡ 2 (mod 5)</td></tr>
+<tr><td>Radical</td><td>The product of the distinct primes</td><td class="n">rad(12) = 6</td></tr>
+<tr><td>σ(n)</td><td>The sum of all divisors</td><td class="n">σ(6) = 1+2+3+6 = 12</td></tr>
+<tr><td>φ(n)</td><td>How many smaller numbers share no factor</td><td class="n">φ(6) = 2</td></tr>
+<tr><td>S<sub>b</sub></td><td>The bag studied here</td><td class="n">15 ∈ S₇</td></tr>
+</table>
+</div>
+
+<h2 id="biblio">Further reading</h2>
+
+<div class="refs">
+
+<h3>Level 1 — if you liked this and want more, without formulas</h3>
+<ol>
+  <li>Wikipedia, <a href="https://en.wikipedia.org/wiki/Prime_number">Prime number</a>.
+      <span class="why">The starting point: what they are and why they are the bricks of everything.</span></li>
+  <li>Wikipedia, <a href="https://en.wikipedia.org/wiki/Fundamental_theorem_of_arithmetic">Fundamental theorem of arithmetic</a>.
+      <span class="why">The fact used throughout: every number factors in exactly one way.</span></li>
+  <li>Wikipedia, <a href="https://en.wikipedia.org/wiki/Modular_arithmetic">Modular arithmetic</a>.
+      <span class="why">The clock mathematics of Figure 3, which is the central idea of the work.</span></li>
+  <li>OEIS Foundation, <a href="https://oeis.org/">The On-Line Encyclopedia of Integer Sequences</a>.
+      <span class="why">A catalogue of more than 380,000 sequences. If you find a sequence of numbers, this is where you check whether it was already known. It is literally the referee we used.</span></li>
+</ol>
+
+<h3>Level 2 — a textbook, to study it properly</h3>
+<ol start="5">
+  <li>D. M. Burton, <i>Elementary Number Theory</i>, McGraw-Hill, 7th ed., 2010.
+      <span class="why">The friendliest place to start. The chapters on divisibility, congruences and arithmetic functions cover everything appearing here.</span></li>
+  <li>G. H. Hardy and E. M. Wright, <i>An Introduction to the Theory of Numbers</i>, Oxford, 6th ed., 2008.
+      <span class="why">The classic. More demanding, and the standard reference for σ(n), φ(n) and the Chinese remainder theorem.</span></li>
+  <li>K. H. Rosen, <i>Elementary Number Theory and Its Applications</i>, Pearson, 6th ed., 2011.
+      <span class="why">Many worked exercises and a section on cryptographic applications.</span></li>
+</ol>
+
+<h3>Level 3 — the work this one is measured against</h3>
+<ol start="8">
+  <li>T. Freiberg, "Products of shifted primes simultaneously taking perfect power values", <i>Journal of the Australian Mathematical Society</i> 92 (2012), 145–154. <a href="https://arxiv.org/abs/1008.1978">arXiv:1008.1978</a>.
+      <span class="why">Studies exactly the same product of shifted primes, but asks a different question: when the result is a perfect power.</span></li>
+  <li>P. Pollack and C. Pomerance, "Prime-perfect numbers", <i>INTEGERS</i> 12A (2012), paper A14.
+      <span class="why">The b = 1 case without the squarefree restriction, and a bound on how many there are up to a given size.</span></li>
+  <li>OEIS, <a href="https://oeis.org/A187778">A187778</a>, "Numbers k dividing psi(k)".
+      <span class="why">The sequence the verifier recomputes from scratch as an external control.</span></li>
+  <li>OEIS, <a href="https://oeis.org/A005117">A005117</a> (squarefree numbers) and <a href="https://oeis.org/A001615">A001615</a> (Dedekind psi).
+      <span class="why">The two basic sequences appearing in the definitions.</span></li>
+</ol>
+
+<h3>And the work itself</h3>
+<ol start="12">
+  <li>J. Ellena Godoy, "Squarefree integers dividing the product of their shifted prime divisors", 2026. DOI <a href="https://doi.org/10.5281/zenodo.22309175">10.5281/zenodo.22309175</a>.
+      <span class="why">The statements, the proofs, the data and the verifier. The file <code>PRIOR_ART.md</code> lists what was searched and where.</span></li>
+</ol>
+</div>
+
+<footer>
+  <p><b>How to check it yourself.</b> Download the repository and run
+  <code>python verify.py</code>. Nothing to install, a few seconds to run. To
+  rebuild the data from scratch, <code>python src/generate_data.py</code>; to
+  rebuild the figures on this page, <code>python src/make_figures.py</code>.</p>
+  <p>System design and research direction are the author's. The mathematical
+  results were produced by an automated system (Claude, Anthropic) under that
+  direction. All computations were verified by two independent implementations
+  and cross-checked against published work. The author is responsible for the
+  correctness of everything published here.</p>
+  <p>Text and figures under CC BY 4.0 · code under MIT ·
+  Jorge Ellena Godoy, 2026</p>
+</footer>
+
+</div>
+</body>
+</html>
