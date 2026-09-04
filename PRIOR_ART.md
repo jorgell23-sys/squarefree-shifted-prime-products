@@ -61,6 +61,30 @@ zbMATH Open, OpenAlex, Crossref, arXiv, all four responding, on 2026-09-04:
 | pairs of primes `p q` with `pq` dividing `p+q+b` | `primes` + `pq divides` | no match |
 | radical of `n` divides sum of divisors, prime-abundant | `radical` + `divisors` | **no match — and this is Control A, the case we knew is published** |
 
+## Repositories: Zenodo and DataCite
+
+**Added 2026-09-04, after the first version of this file.** Zenodo registers its
+DOIs with **DataCite, not Crossref**, so the four bibliographic sources above do
+not cover it: Crossref cannot see it at all, OpenAlex ingests part of DataCite
+but not all of it, and neither arXiv nor zbMATH index it. That is a real gap for
+elementary number theory, which often lands in repositories rather than
+journals.
+
+| query | source | result |
+|---|---|---|
+| `squarefree AND "shifted primes"` | Zenodo | 5 hits; the only one about this object is **this repository itself** |
+| `"shifted prime" AND squarefree` | DataCite | 5 hits; the only ones about this object are **this repository's own two DOIs** |
+| `"Dedekind psi" OR ("sum of divisors" AND squarefree AND divides)` | Zenodo | 3 hits, none about this condition (Riemann-hypothesis-and-`psi`, and a conjecture on `H(f(x)) = H(g(x))`) |
+| `"radical of n" OR "rad(n)" AND "sum of divisors"` | DataCite | 8 hits, **all eight by this author**, from a different repository |
+
+> **A warning that comes with these two sources, and it is the reason they are
+> listed separately.** Once this work is deposited, these repositories contain
+> it — so a later search will find it and can report the object as "already
+> published" while citing us. Every hit above that matches this object is our
+> own deposit, and is excluded on that basis rather than counted. Anyone
+> repeating this search after 2026-09-04 should expect to find this repository
+> and should exclude it too.
+
 ## Web searches, with the exact queries
 
 Run on 2026-09-04:
@@ -98,7 +122,8 @@ two-prime characterization.**
 The case `b = 1` **is known**, and Theorem 1 specialized to it is the standard
 argument; that is declared in `RESULT.md` and not claimed.
 
-For general `b`, the searches above did not find the family `S_b`, the bound
+For general `b`, the searches above — including Zenodo and DataCite, and
+excluding this author's own deposits — did not find the family `S_b`, the bound
 `p ≤ b + 2`, the class count `N(n) = prod_p #{q mod p}`, or the two-prime
 characterization `pq | b(b+p+q)` / `b ≡ φ(n) − 1 (mod n)`.
 
