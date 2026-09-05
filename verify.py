@@ -277,6 +277,73 @@ def explainer():
           % ("" if not stale else " -- stale: %s" % stale))
 
 
+#: Las seis partes de la portada, por su ancla. Este control vive **dentro del
+#: repositorio** a proposito: un estandar que solo comprueba la herramienta que
+#: publica se rompe en cuanto alguien edita el README despues de publicar, o
+#: clona el repo y lo modifica. Aca falla donde sea que este.
+FRONT_PAGE_PARTS = (
+    ("hallazgo:que", "what was found, in one sentence"),
+    ("hallazgo:enunciado", "the exact statement"),
+    ("hallazgo:ejemplo", "the smallest case, with numbers"),
+    ("hallazgo:prueba", "why it is proved"),
+    ("hallazgo:comprobar", "the command that checks it"),
+    ("hallazgo:nodice", "what it does not say"),
+)
+
+
+def front_page():
+    """The front page states the finding, in six parts, before anything else.
+
+    A reader who opens this repository must be able to say what was found and
+    why it is true without scrolling past the first screen. That is a rule
+    about the artifact, so it is checked by the artifact.
+
+    What is required, and why each item: the six parts, in order, at the top;
+    no version history before them (the change log is real and goes at the end,
+    but in front it takes the result's place); at least three numerals in the
+    example, because a finding is shown happening rather than described; and an
+    executable command in the check part, because otherwise "verifiable" is a
+    word.
+    """
+    print("\n== front page: the finding, in six parts, before anything else ==")
+    here = os.path.dirname(os.path.abspath(__file__))
+    historia = re.compile(
+        r"(what changed in version|qu[e\u00e9] cambi[o\u00f3] en la versi[o\u00f3]n|"
+        r"version \d|versi[o\u00f3]n \d|release \d)", re.I)
+    leccion = re.compile(
+        r"(la regla que sale|the rule that comes out|the rule this leaves|"
+        r"lo que esto ense[n\u00f1]a|what this teaches|the lesson)", re.I)
+    for name in ("README.md", "README.es.md", "RESULT.md"):
+        path = os.path.join(here, name)
+        if not os.path.exists(path):
+            check(False, "%s exists" % name)
+            continue
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+        at = [text.find("<!-- %s -->" % a) for a, _ in FRONT_PAGE_PARTS]
+        missing = [q for (a, q), i in zip(FRONT_PAGE_PARTS, at) if i < 0]
+        if not check(not missing, "%s: has all six parts%s"
+                     % (name, "" if not missing else " -- missing %s" % missing)):
+            continue
+        check(at == sorted(at), "%s: the six parts are in order" % name)
+        head = text[: at[0]]
+        check(len(head.splitlines()) <= 12,
+              "%s: the finding is at the top (line %d)"
+              % (name, len(head.splitlines()) + 1))
+        m = historia.search(head)
+        check(m is None, "%s: no version history before the finding%s"
+              % (name, "" if m is None else " -- found %r" % m.group(0)))
+        numerals = len(re.findall(r"\d[\d.,]{2,}", text[at[2]:at[3]]))
+        check(numerals >= 3,
+              "%s: the example carries numbers (%d found)" % (name, numerals))
+        checkpart = text[at[4]:at[5]]
+        check("```" in checkpart or "\n    " in checkpart,
+              "%s: the check part carries an executable command" % name)
+        m = leccion.search(text)
+        check(m is None, "%s: no methodological aside%s"
+              % (name, "" if m is None else " -- found %r" % m.group(0)))
+
+
 def main():
     external_control()
     lemma_B()
@@ -286,6 +353,7 @@ def main():
     published_table()
     structure()
     explainer()
+    front_page()
     #: **Autorreferencial a propósito.** La página anuncia cuántos controles
     #: corre este archivo; si se agrega uno y no se actualiza el texto, la
     #: cuenta deja de cerrar y la verificación falla. Se mide al final, con el
