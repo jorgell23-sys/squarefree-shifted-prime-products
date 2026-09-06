@@ -1,0 +1,68 @@
+{
+ "note": "medians per decade of the effective universe E(b), its one-round version E1(b), the universe size and the number of peeling rounds. Census of all odd b <= 20001 plus 120 random values (seed 20260906) per decade from 1e4 to 1e8.",
+ "decades": [
+  {
+   "decade": "1e3",
+   "n": 4500,
+   "median_b": 5500.0,
+   "median_universe": 725.0,
+   "median_E1": 313.0,
+   "median_E": 48.0,
+   "median_rounds": 12.0
+  },
+  {
+   "decade": "1e4",
+   "n": 5121,
+   "median_b": 15109,
+   "median_universe": 1762,
+   "median_E1": 693,
+   "median_E": 70,
+   "median_rounds": 15
+  },
+  {
+   "decade": "1e5",
+   "n": 120,
+   "median_b": 575177.0,
+   "median_universe": 47214.0,
+   "median_E1": 14047.5,
+   "median_E": 244.5,
+   "median_rounds": 25.0
+  },
+  {
+   "decade": "1e6",
+   "n": 120,
+   "median_b": 5772508.0,
+   "median_universe": 398248.5,
+   "median_E1": 105603.0,
+   "median_E": 577.5,
+   "median_rounds": 34.0
+  },
+  {
+   "decade": "1e7",
+   "n": 120,
+   "median_b": 53727628.0,
+   "median_universe": 3210716.5,
+   "median_E1": 737309.5,
+   "median_E": 1277.5,
+   "median_rounds": 44.0
+  },
+  {
+   "decade": "1e8",
+   "n": 120,
+   "median_b": 539667812.0,
+   "median_universe": 28331855.0,
+   "median_E1": 5864524.0,
+   "median_E": 2843.5,
+   "median_rounds": 54.5
+  }
+ ],
+ "out_of_sample": {
+  "fitted_on": "b <= 1e7",
+  "formula": "log|E| = 0.3562 log b + 0.981 sum_{p|b} 1/p + 0.6279",
+  "decade": "[1e8,1e9)",
+  "predicted_median": 2870,
+  "measured_median": 2844,
+  "error_percent": 0.9,
+  "pi_pi_b_would_predict": 21000
+ }
+}

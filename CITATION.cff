@@ -1,6 +1,7 @@
 cff-version: 1.2.0
 title: "Squarefree integers dividing the product of their shifted prime divisors"
 message: "If you use this work, please cite it as below."
+version: 2.0.0
 type: dataset
 authors:
   - family-names: "Ellena Godoy"
@@ -9,8 +10,11 @@ abstract: >-
   For an integer b, let S_b be the set of squarefree integers n dividing the
   product of (p + b) over the primes p of n. This interpolates two classical
   objects: b = 1 gives the squarefree part of n | sigma(n), whose only member
-  above 1 is 6, and b = -1 gives n | phi(n). For odd positive b every prime of
-  every member is at most b + 2, so S_b is finite. Membership depends only on b
+  above 1 is 6, and b = -1 gives n | phi(n). For every b >= 1 the primes of every member are bounded
+  by max((2p*-1)b, 2p*), where p* is the least prime not dividing b, so S_b is
+  finite for every b; the largest prime lies in an arithmetic progression of
+  primes of common difference b, and for odd b parity cuts that progression at
+  its first term, recovering the bound b + 2. Membership depends only on b
   modulo n, and the number of residue classes of b for which a given squarefree
   n belongs is exactly the product over p | n of the number of distinct residues
   q mod p with q | n; this is what shows the count |S_b| is not a function of b
@@ -20,7 +24,15 @@ abstract: >-
   prime divides b, which factors as (up-1)(uq-1) = ub+1 and turns the count into
   a factorization problem. The squarefree members are closed under least common
   multiple, so S_b has a maximum that every member divides. Complete counts are
-  given for the 1001 odd b up to 2001. The case b = 1 is classical and is not
+  given for the 1001 odd b up to 2001. The effective universe E(b) -- the
+  largest source-free set of primes, whose product is the maximum of S_b -- is
+  measured over 10481 values of b: its size is not pi(pi(b)), the ratio falling
+  from 0.384 to 0.0056 across four decades, and grows instead like a power
+  b^0.36, matching the fixed point of a parameter-free model whose asymptotic
+  exponent is 1/e. A control over a random universe of the same density shows
+  the power law is a property of the peeling rather than of the primes, while
+  the structural term -- each prime dividing b raising log|E(b)| by about 1/p --
+  is arithmetic, with the measured Hardy-Littlewood factor 2.017 against 2. The case b = 1 is classical and is not
   claimed; all results are verified by independent implementations and
   cross-checked against OEIS A187778.
 keywords:

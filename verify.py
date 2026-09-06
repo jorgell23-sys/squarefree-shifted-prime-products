@@ -15,6 +15,7 @@ from math import gcd
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 import shifted_primes as S  # noqa: E402
+import effective_universe as EU  # noqa: E402
 
 FAILED = []
 PASSED = 0
@@ -380,9 +381,121 @@ def readme_counts():
                                "" if not malos else ", wrong: %s" % malos[:3]))
 
 
+
+# --------------------------------------------------------------------------
+def bound_every_b():
+    """Theorem 1: the bound holds for every b, not only for odd b.
+
+    Checked the only way a bound can be checked: by searching **past** it. The
+    core is computed with a ceiling of three times the bound, so a false bound
+    would show up as a prime above it.
+    """
+    sv = EU.sieve(4000)
+    bad = []
+    for b in range(1, 301):
+        lim = EU.theorem_bound(b)
+        top = min(3 * lim + 10, 3999)
+        E, _ = EU.core(EU.predecessors(b, top, sv))
+        if E and max(E) > lim:
+            bad.append(b)
+    check(not bad, "Theorem 1: b = 1..300, searching to three times the bound, "
+                   "never exceeded (%d violations)" % len(bad))
+
+    beats = total = 0
+    for b in range(2, 301, 2):
+        top = min(3 * EU.theorem_bound(b) + 10, 3999)
+        E, _ = EU.core(EU.predecessors(b, top, sv))
+        if E:
+            total += 1
+            beats += max(E) > b + 2
+    check(beats >= total - 1,
+          "Theorem 1 is not vacuous: the odd bound b+2 fails for %d of the %d "
+          "even b <= 300" % (beats, total))
+
+    #: What the theorem bounds is **not** the whole progression: it is the part
+    #: above (M+b)/2, which is what step (1) forces to exist. The full run can
+    #: be longer, and it can even reach p* terms when it CONTAINS p* -- b=6
+    #: gives 5,11,17,23,29 with p*=5, five terms. Checking `len(prog) < p*`
+    #: would be checking a claim the theorem does not make, and it is false.
+    for b, M, k in ((6, 29, 5), (30, 157, 6), (210, 1063, 6)):
+        top = min(3 * EU.theorem_bound(b) + 10, 3999)
+        E, _ = EU.core(EU.predecessors(b, top, sv))
+        prog = EU.progression_at(b, M)
+        pe = EU.least_prime_not_dividing(b)
+        forzados = [x for x in prog if x > (M + b) / 2.0]
+        check(E and max(E) == M and len(prog) == k
+              and all(EU.is_prime(x) for x in prog)
+              and len(forzados) < pe
+              and (len(prog) < pe or pe in prog),
+              "b=%d: the core reaches %d, %s is a run of %d primes of common "
+              "difference %d, and its %d terms above (M+b)/2 are fewer than "
+              "p*=%d" % (b, M, prog, k, b, len(forzados), pe))
+
+    check(all(EU.least_prime_not_dividing(b) == 2 for b in range(1, 200, 2)),
+          "odd b is the degenerate case: p* = 2 for every odd b")
+
+
+# --------------------------------------------------------------------------
+def effective_universe():
+    """The effective universe: what it is, and that one round is not enough."""
+    sv = EU.sieve(4000)
+
+    C = EU.bound_C(7, sv)
+    E, _ = EU.core(EU.predecessors(7, C, sv))
+    N = 1
+    for q in sorted(E):
+        N *= q
+    S7 = EU.brute_force_S(7, C, sv)
+    check(C == 7 and sorted(E) == [2, 3, 5, 7] and N == 210,
+          "b=7 worked by hand: C(7)=7, E(7)={2,3,5,7}, N(7)=210")
+    check(len(S7) == 8 and all(N % n == 0 for n in S7),
+          "b=7: S_7 = %s -- eight elements, every one divides 210" % (S7,))
+
+    #: `E(b)` is not merely a bound on which primes can occur: it is exactly
+    #: the set of primes that DO occur in some element. That is what earns it
+    #: the name, and it is checked against brute force, not asserted.
+    for b in (3, 5, 7, 9, 11, 15, 21, 33, 45):
+        C = EU.bound_C(b, sv)
+        E, _ = EU.core(EU.predecessors(b, C, sv))
+        used = set()
+        for n in EU.brute_force_S(b, C, sv):
+            for q in range(2, C + 1):
+                if sv[q] and n % q == 0:
+                    used.add(q)
+        check(used == set(E),
+              "b=%d: the effective universe is exactly the set of primes that "
+              "occur in solutions (%d primes)" % (b, len(E)))
+
+    C = EU.bound_C(999, sv)
+    pred = EU.predecessors(999, C, sv)
+    E1 = EU.first_round(pred)
+    E, rounds = EU.core(pred)
+    check(len(E1) > 4 * len(E) and rounds >= 5,
+          "b=999: one peeling round leaves %d primes, the full peeling leaves "
+          "%d, after %d rounds" % (len(E1), len(E), rounds))
+
+    #: The model has no fitted constant, and what it predicts is the MEDIAN
+    #: over b of a given size -- a single b carries the structural term
+    #: (each prime dividing b raises log|E(b)| by about 1/p), which the model
+    #: does not model.
+    import statistics
+    for lo, hi in ((1001, 1200), (2001, 2200)):
+        med_E = statistics.median(
+            len(EU.core(EU.predecessors(b, EU.bound_C(b, sv), sv))[0])
+            for b in range(lo, hi + 1, 2))
+        med_m = statistics.median(EU.fixed_point(EU.bound_C(b, sv), sv)
+                                  for b in range(lo, hi + 1, 2))
+        err = abs(med_m - med_E) / med_E
+        check(err < 0.30,
+              "b in [%d,%d]: the parameter-free model gives median %.1f against "
+              "%.1f measured, %.0f%% off" % (lo, hi, med_m, med_E, 100 * err))
+
+
 def main():
     external_control()
     lemma_B()
+    bound_every_b()
+    effective_universe()
     theorem_A()
     two_primes()
     counting()

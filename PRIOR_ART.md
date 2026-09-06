@@ -133,3 +133,47 @@ folklore that no index records. What we assert is what we did: we looked, in the
 places listed, with the terms listed, on the date listed, with a positive
 control that works (OEIS) and one that does not (the bibliographic four), and we
 did not find it.
+
+---
+
+# Version 2 — the bound for every `b`, and the effective universe
+
+Searches run on **2026-09-06**, for the two new claims: the bound
+`M ≤ max((2p*−1)b, 2p*)` valid for every `b`, and the growth law of the
+effective universe `E(b)`.
+
+## Positive controls, declared before the searches
+
+A search that finds nothing is worth nothing unless it can be shown to find
+something when there is something to find.
+
+| control | what it checks | result |
+|---|---|---|
+| OEIS by sequence: `2,3,5,7,11,13,17,19,23,29,31,37` | that the sequence lookup works at all | **found**: `A000040`, *The prime numbers* |
+| `b = 1` recomputed from scratch by `verify_effective.py` | that our code reproduces published mathematics | **found**: `S_1 = {6}`, the classical result that 6 is the only squarefree `n > 1` with `n | σ(n)` |
+| OEIS by sequence: the counts `|S_b|` | a sequence version 1 already reported absent | still absent, 0 entries — consistent with version 1 |
+
+## What was searched, and what came back
+
+| source | query | result |
+|---|---|---|
+| OEIS, by sequence | `\|E(b)\|` = 2,3,4,4,5,5,4,7,7,7,9,6,4,9,9,8,8,6,7,9 — and again with 40 terms | one hit, `A308069` (*integer-sided triangles with semiprime sides*). **Verified false positive**: the queried subsequence does not occur in `A308069`'s data at all, and the repository's own `SOLO_PREFIJO` test rejects it. Version 1 recorded the same false positive |
+| web | *prime chains Pratt trees Ford Konyagin Luca digraph p divides q-1* | **the nearest established literature.** Ford, Konyagin & Luca, *Prime Chains and Pratt Trees*, Geometric and Functional Analysis 20 (2010). Prime chains are `p_{j+1} ≡ 1 (mod p_j)` — our digraph `H_b` at `b = −1` with the arrows reversed. There all arrows descend, so there are no cycles; correspondingly our `E(−1)` is empty |
+| web | *prime divisors of shifted primes p+a distribution Erdos Pomerance* | **the context of the arcs.** Erdős (1935) and Fan–Pomerance on `ω(p+a) ≈ log log x`. This is about the arcs of `H_b`, not about its source-free core |
+| web | *"largest subset" primes "no source" digraph core self-sustaining divisibility* | nothing relevant |
+| web | *counting primes p such that −b mod p is prime, least prime in residue class, x^{1/e}* | nothing relevant |
+| web | *squarefree n divides product (p+b) finiteness arithmetic progression of primes common difference* | nothing relevant |
+| web | *"n divides sigma(n)" squarefree generalization shifted p+b finite set* | nothing relevant |
+
+## What can and cannot be claimed
+
+The object sits next to two established literatures — prime chains and shifted
+prime divisors — and **we did not find it in either, nor in the direct
+searches**. That is a **documented absence, not a proof of novelty**: the bound
+of Theorem 1 is an elementary argument, and elementary arguments can be folklore
+that no index records.
+
+What *is* stated as fact is narrower and checkable: the even case of the
+finiteness of `S_b` was left open **in version 1 of this repository**, on the
+stated belief that it needed a case of de Polignac's conjecture, and Theorem 1
+closes it without any such input.

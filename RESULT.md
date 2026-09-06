@@ -91,7 +91,7 @@ cd squarefree-shifted-prime-products
 python verify.py
 ```
 
-35 checks, no dependencies, `PASS` or `FAIL` on each. One of them is external:
+55 checks, no dependencies, `PASS` or `FAIL` on each. One of them is external:
 it recomputes **OEIS A187778** (*numbers `k` dividing `psi(k)`*) from scratch up
 to `k = 20000` and confirms its only squarefree term above 1 is `6`, which is
 exactly `S_1`. The exact model counter is checked against brute force over all
@@ -101,40 +101,82 @@ exactly `S_1`. The exact model counter is checked against brute force over all
 ## What it does not say
 
 `b = 1` gives `{6}` -- the classical fact that `6` is the only squarefree `n`
-with `n | sigma(n)` -- and **that is not claimed here**. Theorem 1 covers odd
-`b > 0` only: for even `b` the finiteness of `S_b` would need a case of de
-Polignac's conjecture and is left open. "No formula in `b`" is a statement about
-the shape of the counting problem that Theorem 2 exhibits, **not** a proof that
-no closed form can exist. And the counts stop at `b = 2001`.
+with `n | sigma(n)` -- and **that is not claimed here**. "No formula in `b`" is a
+statement about the shape of the counting problem that Theorem 2 exhibits,
+**not** a proof that no closed form can exist; the exact counts stop at
+`b = 2001`. The growth law of the effective universe is **measured and modelled,
+not proved**, and the control in Theorem 5 shows the power law is a fact about
+peeling, not about the primes. Theorem 1 does bound `S_b` for every `b`, but the
+bound is not tight.
 
 ---
 
 ---
 
-## Theorem 1 (bound, and finiteness) — for odd `b > 0`
+## Theorem 1 (bound, and finiteness) — for **every** `b ≥ 1`
 
-*If `n > 1` is squarefree and `n ∈ S_b`, then every prime of `n` is at most
-`b + 2`. In particular `S_b` is finite.*
+*Let `n > 1` be squarefree with `n ∈ S_b`, let `P` be its set of primes and
+`M = max P`. Let `p*` be the smallest prime that does **not** divide `b`. Then*
 
-**Proof.** Write `P` for the primes of `n`. Since `n` is squarefree, `n | prod
-(p+b)` holds iff every `p ∈ P` divides some `q + b` with `q ∈ P`. Let `M = max
-P` and let `q ∈ P` with `M | q + b`.
+    M ≤ max( (2p* − 1)·b ,  2p* ).
 
-- If `q = M`, then `M | b`, so `M ≤ b`.
-- If `q < M` and `M > b`, then `0 < q + b < M + b < 2M`, hence `q + b = M`.
-  With `b` odd, an odd `q` would make `M` even, impossible for `M > b ≥ 1`.
-  So `q = 2` and `M = b + 2`.
+*In particular `S_b` is finite for every `b ≥ 1`.*
 
-Either way `M ≤ b + 2`. ∎
+**Proof.**
 
-The exact bound is `C(b) = max(D ∪ L)` with `L = {p : p | b}` and
-`D = {b+2 if prime} ∪ {p ≤ b : (−b) mod p is prime}` — for `p ≤ b` the residue
-class `−b mod p` has a single representative below `p`, so a prime has at most
-**one** possible smaller predecessor.
+*(1) The step.* Suppose `p ∈ P` satisfies `p > (M+b)/2`. It has a predecessor
+`q ∈ P`, that is `p | q + b`. Since `0 < q + b ≤ M + b < 2p`, the only multiple
+of `p` in that range is `p` itself, so `q + b = p`, and therefore `p − b ∈ P`.
 
-> **The case `b = 1` is not new.** It gives `S_1 = {6}` — the classical fact
-> that 6 is the only squarefree `n > 1` with `n | sigma(n)` — and the standard
-> proof is this same argument. See `PRIOR_ART.md`.
+*(2) The progression.* Apply (1) to `M`, then to `M − b`, and so on, as long as
+the term exceeds `(M+b)/2`. This gives that `M − i·b` is a prime of `P` for
+every `i < (M−b)/(2b)`: an **arithmetic progression of primes with common
+difference `b`**.
+
+*(3) The cut.* `p*` does not divide `b`, so the residues `M − i·b (mod p*)` run
+through every class as `i` varies. If the progression had `p*` consecutive
+terms, one of them would be divisible by `p*`; being prime, it would have to
+equal `p*`. So if all terms exceed `p*`, the progression has at most `p* − 1`
+terms.
+
+*(4)* Combining (2) and (3), `(M−b)/(2b) ≤ p* − 1`, that is `M ≤ (2p*−1)b`. The
+hypothesis in (3) holds whenever `(M+b)/2 ≥ p*`; if it does not, then
+`M < 2p* − b ≤ 2p*`. ∎
+
+### The odd case is this theorem
+
+For odd `b` we have `p* = 2`, and the progression cannot have two terms: `M` and
+`M − b` have opposite parity, and both are prime, so the even one is `2` and
+`M = b + 2`. **The bound `b + 2` was never a property of `b` being odd. It is
+the statement that parity cuts the progression at its first step.**
+
+### This closes the even case, and without de Polignac
+
+Version 1 of this repository stated the finiteness only for odd `b`, and said
+that *"for even `b` the finiteness of `S_b` would need a case of de Polignac's
+conjecture and is left open"*. It does not. The argument above never needs any
+pair of primes at distance `b` to **exist**; it only needs the progressions to
+be **short**, and that follows from a congruence modulo `p*`.
+
+### For even `b` the bound `b + 2` is false, and not narrowly
+
+**149 of the 150 even values `b ≤ 300`** admit a solution with a prime larger
+than `b + 2`, and so do **all 2001** even values in `1000 ≤ b ≤ 5000`. The
+progressions behind the extreme cases are the classical long runs of primes,
+which is why the primorials are the worst offenders:
+
+| `b` | `p*` | bound | largest prime of a solution | the progression of common difference `b` |
+|---|---:|---:|---:|---|
+| 2 | 3 | 10 | 7 | 3, 5, 7 |
+| 6 | 5 | 54 | 29 | 5, 11, 17, 23, 29 |
+| 30 | 7 | 390 | 157 | 7, 37, 67, 97, 127, 157 |
+| 210 | 11 | 4.410 | 1.063 | 13, 223, 433, 643, 853, 1063 |
+| 2310 | 13 | 57.750 | 13.931 | 71, 2381, 4691, 7001, 9311, 11621, 13931 |
+| 30030 | 17 | 990.990 | 276.277 | 6007, 36037, 66067, … (10 terms) |
+
+In every row the progression is shorter than `p*`, which is what the theorem
+asserts. The bound is not tight: it is attained only at `b = 1`, and for even
+`b` the median of `M / bound` is 0,35.
 
 ## Theorem 2 (local characterization)
 
@@ -193,6 +235,158 @@ every prime `p | b + 2`.
 
 ---
 
+## Theorem 5 (the effective universe)
+
+*Let `E(b)` be the set obtained from the primes `<= C(b)` by repeatedly deleting
+every prime with no predecessor left. Then `E(b)` is the largest source-free
+set; `N(b) = prod E(b)` is the largest element of `S_b`; every element of `S_b`
+divides `N(b)`; and `E(b)` is **exactly** the set of primes that occur in some
+element of `S_b`.*
+
+**Proof.** A prime with no predecessor cannot lie in any solution, so deleting
+it removes no solution; deleting it may leave another prime bare, so the
+deletion is iterated, and the result still contains every solution. What
+remains is source-free by construction, hence is itself a solution (Theorem 2),
+and it contains every other one, so by Theorem 4 it is the maximum. Every prime
+of `E(b)` therefore occurs in a solution, namely `N(b)`. Conversely a prime
+occurring in a solution has a predecessor inside it, so it survives every
+deletion round. []
+
+Checked against brute force for `b = 3, 5, 7, 9, 11, 15, 21, 33, 45`.
+
+`E1(b)` denotes the result of a **single** deletion round; the difference
+between the two is the whole story of what follows. At `b = 999`, one round
+leaves 97 primes and the full peeling leaves 22, after 19 rounds.
+
+## The growth of `|E(b)|` — measured and modelled, not proved
+
+### It is not `π(π(b))`
+
+The natural heuristic says: `p` needs a predecessor in the class `−b mod p`,
+there are about `π(b)/(p−1)` prime candidates, so the primes up to `π(b)`
+survive — about `π(π(b))` of them. **That heuristic counts as predecessors every
+prime of the universe, and a predecessor only counts if it survives too.**
+
+Measured over **10.481 values of `b`** — a complete census of the odd `b ≤ 20001`
+plus 120 values drawn at random (seed 20260906, fixed in advance) in each decade
+from `10⁴` to `10⁷` — medians per decade:
+
+| decade | n | `\|E\|` | `\|E₁\|` | `π(π(b))` | `\|E\|/π(π(b))` | `\|E₁\|/π(π(b))` | slope of `\|E\|` |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 10³ | 4500 | 48 | 313 | 125 | 0,384 | 2,50 | — |
+| 10⁴ | 5121 | 70 | 693 | 264 | 0,266 | 2,63 | 0,3734 |
+| 10⁵ | 120 | 244 | 14.048 | 4.742 | 0,0516 | 2,96 | 0,3437 |
+| 10⁶ | 120 | 578 | 105.603 | 32.999 | 0,0175 | 3,20 | 0,3727 |
+| 10⁷ | 120 | 1.278 | 737.310 | 227.112 | 0,0056 | 3,25 | 0,3559 |
+| 10⁸ | 120 | 2.844 | 5.864.524 | 1.738.254 | **0,00164** | 3,37 | 0,3468 |
+
+The ratio falls by a factor **234** across five decades and keeps falling.
+`π(π(b))` is a decent law for `E₁(b)`, which is a different set: its slope
+climbs 0,787 → 0,827 → 0,875 → 0,871 → **0,899** towards 1, exactly as
+`b/(log b)^k` must, while the slope of `|E(b)|` stays flat. Both series come
+from the same computation over the same `b`.
+
+### Predicting a decade before computing it
+
+Fitting **only** `b ≤ 10⁷`,
+
+    log |E(b)| = 0,3562·log b + 0,981·Σ_{p|b} 1/p + 0,6279
+
+and predicting the median of the decade `[10⁸, 10⁹)` **before computing a single
+value**:
+
+| | median `\|E(b)\|` |
+|---|---:|
+| predicted by the fitted law | **2.870** |
+| predicted with the pure `1/e` slope | 3.637 |
+| predicted if `\|E\| ∝ π(π(b))` held | ≈ 21.000 |
+| **measured** | **2.844** |
+
+**0,9 % error** extrapolating a full decade. `π(π(b))` would be off by a factor
+of 7,4.
+
+### The self-consistent model, and the exponent `1/e`
+
+If the surviving set has `m` primes and behaves like an equidistributed set of
+residues modulo each `p`, then `p` survives with probability `1 − e^{−m/(p−1)}`,
+and `m` must be a fixed point of
+
+    g(m) = Σ_{p ≤ C(b)} ( 1 − e^{−m/(p−1)} )
+
+Splitting the sum at `p = m` gives `m ≈ π(m) + m·(log log b − log log m)`, hence
+`log b / log m → e`, that is
+
+    |E(b)| = b^{1/e + o(1)},      1/e = 0,367879…
+
+**A power, against the nearly linear `π(π(b)) ~ b/(log b)²`.** The four measured
+slopes — 0,3734 / 0,3437 / 0,3727 / 0,3559, mean 0,361 — sit inside the interval
+`[0,33 , 0,42]` declared before measuring.
+
+The model has **no fitted constant**; its only input is `C(b)`. Median relative
+error against measurement:
+
+| `b ~` | 10² | 10³ | 2·10³ | 10⁴ | 10⁵ | 10⁶ | 10⁷ |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| error | −30,6 % | −27,1 % | −19,0 % | −14,6 % | −14,8 % | +10,5 % | **+0,6 %** |
+
+Solving the fixed point with the integral `∫₂^C (1−e^{−m/t})/log t dt` — which
+reaches far past what can be computed with actual primes — confirms the
+derivation: `log C / log m` goes 2,098 → 2,388 → 2,577 → 2,683 → **2,716** at
+`C = 10¹⁰⁰`, converging to `e`. The convergence is extremely slow, which is why
+the model itself predicts a local slope of 0,353–0,360 over the measured range
+rather than its own limit.
+
+### The control that says what this is *not* about
+
+Repeat everything over a **fake** universe: a random set with the same density
+(`2/log n`) and the same parity as the primes, leaving divisibility untouched.
+Only membership changes.
+
+**The power law survives.** So `b^{1/e}` is not a fact about the primes; it is a
+fact about peeling a divisibility digraph whose universe has density `1/log`.
+
+### The part that *is* about the primes
+
+Each prime dividing `b` raises `log|E(b)|` by about `1/p`:
+
+| `p` | measured effect | `1/p` |
+|---:|---:|---:|
+| 3 | +0,314 | 0,333 |
+| 5 | +0,212 | 0,200 |
+| 7 | +0,144 | 0,143 |
+| 11 | +0,103 | 0,091 |
+
+Fitting over 10.361 values,
+
+    log |E(b)| = 0,3562·log b + 0,981·Σ_{p|b} 1/p + 0,628
+
+with the structural coefficient equal to 1 within error. Multiples of 105 sit
+`+0,515` above their neighbourhood: **1,67 times** the typical `|E|` for their
+size.
+
+**The mechanism runs against the counting intuition.** `p | b` *reduces* the
+number of arcs (−0,137 in log for `p = 3`) yet *increases* `|E|`; the
+correlation of `log|E|` with `log(arcs)` is **−0,736**. The lost arcs pointed at
+`p`, which was already alive: they were redundant. What decides lives at the
+edge. For `p > C/2` the only possible predecessor is `q = 2p − b`, and if
+`p₀ | b` then `2p − b` is never divisible by `p₀`. Over 400 values of `b ~ 10⁵`
+and 2,5 million candidates:
+
+| | candidates | with `2p−b` prime | rate |
+|---|---:|---:|---:|
+| `3 \| b` | 2.567.543 | 710.005 | **0,2765** |
+| `3 ∤ b` | 2.537.637 | 347.935 | **0,1371** |
+
+The ratio is **2,017**, against the `(p−1)/(p−2) = 2` predicted by the local
+Hardy–Littlewood factor for "`p` and `2p−b` both prime". This term does **not**
+reproduce in the fake universe.
+
+### And `|S_b|` follows `|E(b)|` exponentially
+
+Over the 1001 exact counts (`b ≤ 2001`):
+
+    log₂ |S_b| = 0,374·|E(b)| + 3,81      R² = 0,886
+
 ## The counting question, and the answer
 
 `data/counts.json` has `|S_b|` for the 1001 odd `b ≤ 2001`, computed with an
@@ -228,8 +422,10 @@ values up to 2001 are all multiples of `105 = 3·5·7`: `b = 1155` (79,725,358),
   searched and did not find it stated for this object (see `PRIOR_ART.md`), but
   a one-line consequence can be folklore that no index records. We claim we did
   not find it, not that nobody knew it.
-- **It does not claim anything for even `b`.** There `S_b` need not be finite,
-  and deciding it runs into de Polignac-type questions. Not touched.
+- **The bound for even `b` is not tight.** Theorem 1 proves finiteness for every
+  `b`, but for even `b` the median of `M / bound` is 0.35; the exact largest
+  prime is governed by the longest arithmetic progression of primes with common
+  difference `b`, which is not determined here.
 - **It does not give an asymptotic** for `|S_b|` or for `|E(b)|`. The 0.941
   correlation is a measurement over 1001 values, not a theorem, and it is
   reported as such.
@@ -240,7 +436,7 @@ values up to 2001 are all multiples of `105 = 3·5·7`: `b = 1155` (79,725,358),
 
 ## Reproducing
 
-    python verify.py                 # 35 checks, ~4 s, no dependencies
+    python verify.py                 # 55 checks, ~4 s, no dependencies
     python src/generate_data.py      # regenerates everything under data/
 
 `data/` is produced entirely by `src/generate_data.py`; no number in this

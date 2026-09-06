@@ -113,7 +113,7 @@ cd squarefree-shifted-prime-products
 python verify.py
 ```
 
-35 comprobaciones, sin instalar nada, `PASS` o `FAIL` en cada una y código de
+55 comprobaciones, sin instalar nada, `PASS` o `FAIL` en cada una y código de
 salida 1 si alguna falla. Rederivan los enunciados desde las definiciones,
 contrastan el contador exacto de modelos contra la enumeración por fuerza bruta
 de los `2^n` subconjuntos en 35 valores de `b` y contra las listas completas
@@ -128,9 +128,10 @@ la función de Dedekind `psi(k) = k * prod_{p | k}(1 + 1/p)`— desde cero hasta
 
 `b = 1` da `S_1 = {6}`, el hecho clásico de que `6` es el único `n` libre de
 cuadrados con `n | sigma(n)`, y **eso no se reclama acá**; la demostración
-estándar es el argumento del Teorema 1. El Teorema 1 cubre sólo `b > 0`
-**impar**: para `b` par, la finitud de `S_b` necesitaría un caso de la conjetura
-de de Polignac y queda abierta. Que `|S_b|` sea *errático* es una afirmación
+estándar es el argumento del Teorema 1. El Teorema 1 ahora cubre todo `b >= 1`,
+pero su cota **no es ajustada** para `b` par: el mayor primo exacto lo gobierna
+la progresión aritmética de primos de diferencia `b` más larga, que acá no se
+determina. Que `|S_b|` sea *errático* es una afirmación
 sobre la forma del problema de conteo que el Teorema 2 exhibe, **no** una
 demostración de que no pueda existir forma cerrada. Los conteos calculados
 llegan hasta `b = 2001`.

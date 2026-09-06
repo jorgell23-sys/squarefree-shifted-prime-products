@@ -10,8 +10,10 @@ residues work (Theorem 2).
 
 Four consequences, and they are the finding:
 
-1. for odd `b > 0` every prime of every solution is at most `b + 2`, so the
-   solution set is **finite**, and therefore computable in full;
+1. for **every** `b >= 1` the primes of every solution are bounded, so the
+   solution set is **finite**, and therefore computable in full -- for odd `b`
+   the bound is `b + 2`, and in general it is governed by the length of an
+   arithmetic progression of primes with common difference `b`;
 2. the `b` admitting a given `n` occupy exactly `N(n)` residue classes modulo
    `n`, with `N(n)` in **closed form**;
 3. the solution set is closed under least common multiple, so for odd `b > 0` it
@@ -28,8 +30,11 @@ For an integer `b`, write
 
 Throughout, `P` denotes the set of prime divisors of `n`, and `omega(n) = #P`.
 
-> **Theorem 1 (bound, and finiteness).** Let `b > 0` be odd. If `n` is in `S_b`,
-> then every prime of `n` is at most `b + 2`. In particular `S_b` is finite.
+> **Theorem 1 (bound, and finiteness).** Let `b >= 1` and let `p*` be the
+> smallest prime that does **not** divide `b`. If `n` is in `S_b`, then every
+> prime of `n` is at most `max((2p* - 1) b, 2p*)`. In particular `S_b` is
+> **finite for every `b`**. For odd `b` we have `p* = 2` and the bound sharpens
+> to `b + 2`.
 
 > **Theorem 2 (local characterisation).** For squarefree `n > 1` with prime set
 > `P` and any integer `b`,
@@ -50,8 +55,9 @@ Throughout, `P` denotes the set of prime divisors of `n`, and `omega(n) = #P`.
 > two-prime solutions into factoring `ub + 1`.
 
 > **Theorem 4 (lattice structure).** If `n` and `m` are in `S_b`, so is
-> `lcm(n, m)`. Hence for odd `b > 0` the set `S_b` has a maximum, and every
-> element divides it.
+> `lcm(n, m)`. Hence for every `b >= 1` the set `S_b` has a maximum `N(b)`, and
+> every element divides it. `N(b)` is the product of the **effective universe**
+> `E(b)` (Theorem 5).
 
 Statements, proofs and tables are in [`RESULT.md`](RESULT.md).
 
@@ -110,7 +116,7 @@ cd squarefree-shifted-prime-products
 python verify.py
 ```
 
-35 checks, no dependencies, `PASS` or `FAIL` on each, exit code 1 if any fails.
+55 checks, no dependencies, `PASS` or `FAIL` on each, exit code 1 if any fails.
 They re-derive the statements from the definitions, check the exact model counter
 against brute-force enumeration over all `2^n` subsets on 35 values of `b` and
 against the explicit complete lists on 23, and include one external control: they
@@ -124,9 +130,10 @@ is `6`, which is exactly `S_1`.
 
 `b = 1` gives `S_1 = {6}`, the classical fact that `6` is the only squarefree `n`
 with `n | sigma(n)`, and **that is not claimed here**; the standard proof is the
-argument of Theorem 1. Theorem 1 covers **odd** `b > 0` only: for even `b` the
-finiteness of `S_b` would need a case of de Polignac's conjecture and is left
-open. That `|S_b|` is *erratic* is a statement about the shape of the counting
+argument of Theorem 1. Theorem 1 now covers every `b >= 1`, but its bound is
+**not tight** for even `b`: the exact largest prime is governed by the longest
+arithmetic progression of primes with common difference `b`, which is not
+determined here. That `|S_b|` is *erratic* is a statement about the shape of the counting
 problem Theorem 2 exhibits — **not** a proof that no closed form can exist. The
 computed counts stop at `b = 2001`.
 
