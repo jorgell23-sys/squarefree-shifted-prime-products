@@ -91,7 +91,7 @@ cd squarefree-shifted-prime-products
 python verify.py
 ```
 
-30 checks, no dependencies, `PASS` or `FAIL` on each. One of them is external:
+35 checks, no dependencies, `PASS` or `FAIL` on each. One of them is external:
 it recomputes **OEIS A187778** (*numbers `k` dividing `psi(k)`*) from scratch up
 to `k = 20000` and confirms its only squarefree term above 1 is `6`, which is
 exactly `S_1`. The exact model counter is checked against brute force over all
@@ -240,7 +240,7 @@ values up to 2001 are all multiples of `105 = 3·5·7`: `b = 1155` (79,725,358),
 
 ## Reproducing
 
-    python verify.py                 # 30 checks, ~4 s, no dependencies
+    python verify.py                 # 35 checks, ~4 s, no dependencies
     python src/generate_data.py      # regenerates everything under data/
 
 `data/` is produced entirely by `src/generate_data.py`; no number in this

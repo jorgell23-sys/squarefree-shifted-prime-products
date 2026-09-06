@@ -344,6 +344,42 @@ def front_page():
               % (name, "" if m is None else " -- found %r" % m.group(0)))
 
 
+def readme_counts():
+    """Que los `|S_b|` que las portadas exhiben salgan de `data/counts.json`.
+
+    Las portadas traen una tabla chica de `|S_b|` para dar una idea de lo
+    erratico que es el conteo. Nada la comparaba con los datos, y una tabla
+    escrita a mano es una segunda copia de cada numero: al redactarla el
+    2026-09-06 se tipearon 1, 2, 2, 4, 6 para `b = 1..9`, cuando los valores son
+    1, 4, 6, 8, 8. Se detecto al contrastar contra el archivo, no al releer.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "data", "counts.json"), encoding="utf-8") as fh:
+        reales = {fila["b"]: fila["size"] for fila in json.load(fh)}
+    fila = re.compile(r"^\|\s*`\\\|S_b\\\|`\s*\|(.+)\|\s*$", re.M)
+    cabecera = re.compile(r"^\|\s*`b`\s*\|(.+)\|\s*$", re.M)
+    for nombre in ("README.md", "README.es.md"):
+        ruta = os.path.join(here, nombre)
+        if not os.path.exists(ruta):
+            check(False, "%s exists" % nombre)
+            continue
+        with open(ruta, encoding="utf-8") as fh:
+            texto = fh.read()
+        mb, mv = cabecera.search(texto), fila.search(texto)
+        if not (mb and mv):
+            check(False, "%s: the |S_b| table is present" % nombre)
+            continue
+        bs = [c.strip() for c in mb.group(1).split("|")]
+        vs = [c.strip().replace("*", "") for c in mv.group(1).split("|")]
+        pares = [(int(b), int(v)) for b, v in zip(bs, vs)
+                 if b.isdigit() and v.isdigit()]
+        malos = [(b, v, reales.get(b)) for b, v in pares if reales.get(b) != v]
+        check(pares and not malos,
+              "%-12s: every |S_b| in the table matches data/counts.json (%d "
+              "compared%s)" % (nombre, len(pares),
+                               "" if not malos else ", wrong: %s" % malos[:3]))
+
+
 def main():
     external_control()
     lemma_B()
@@ -354,23 +390,40 @@ def main():
     structure()
     explainer()
     front_page()
+    readme_counts()
     #: **Autorreferencial a propósito.** La página anuncia cuántos controles
     #: corre este archivo; si se agrega uno y no se actualiza el texto, la
     #: cuenta deja de cerrar y la verificación falla. Se mide al final, con el
     #: total ya conocido, sumando los que este mismo bloque va a agregar.
-    total = PASSED + len(FAILED) + 2
+    #: `+ len(paginas)` y no un 2 escrito: son los controles que este mismo
+    #: bloque agrega, uno por pagina, y contarlos evita que la constante
+    #: quede corta la proxima vez que se agregue una.
+    #: Las cinco paginas que anuncian la cuenta: las dos del sitio, las dos
+    #: portadas y el informe. `RESULT.md` la decia en dos lugares y no estaba
+    #: comprobada -- se descubrio en la auditoria del 2026-09-06, con el texto
+    #: en 30 y la corrida en 34.
+    paginas = [os.path.join("docs", "index.html"),
+               os.path.join("docs", "es", "index.html"),
+               "README.md", "README.es.md", "RESULT.md"]
+    total = PASSED + len(FAILED) + len(paginas)
     here = os.path.dirname(os.path.abspath(__file__))
-    for page in (os.path.join("docs", "index.html"),
-                 os.path.join("docs", "es", "index.html")):
+    #: Las dos portadas lo dicen en prosa y las dos paginas en un atributo; se
+    #: comprueban las cuatro, porque una regla que solo vale para algunas se
+    #: rompe en la que quedo afuera.
+    patron = {"README.md": r"(\d+) checks, no dependencies",
+              "RESULT.md": r"(\d+) checks, no dependencies",
+              "README.es.md": r"(\d+) comprobaciones, sin instalar nada"}
+    for page in paginas:
         path = os.path.join(here, page)
         if not os.path.exists(path):
             check(False, "%s exists" % page)
             continue
         with open(path, encoding="utf-8") as fh:
-            m = re.search(r'data-fact="checks">([^<]+)<', fh.read())
+            texto = fh.read()
+        m = re.search(patron.get(page, r'data-fact="checks">([^<]+)<'), texto)
         check(m is not None and int(m.group(1)) == total,
-              "%s: the number of checks it announces is right (%s, expected %d)"
-              % (page, m.group(1) if m else "absent", total))
+              "%-20s: the number of checks it announces is right (%s, "
+              "expected %d)" % (page, m.group(1) if m else "absent", total))
     print("\n%d passed, %d failed" % (PASSED, len(FAILED)))
     for f in FAILED:
         print("  - " + f)
