@@ -8,16 +8,25 @@ prime divisors shifted by `b`. Membership turns out to be decided **entirely by
 `b` modulo `n`**, one prime at a time, by a condition naming exactly which
 residues work (Theorem 2).
 
-Four consequences, and they are the finding:
+Five consequences, and they are the finding:
 
-1. for odd `b > 0` every prime of every solution is at most `b + 2`, so the
-   solution set is **finite**, and therefore computable in full;
-2. the `b` admitting a given `n` occupy exactly `N(n)` residue classes modulo
+1. for **every** `b >= 1` the solution set is **finite**, with every prime of
+   every solution at most `max((2p* - 1) b, 2p*)`, where `p*` is the least prime
+   **not** dividing `b`. The bound is a statement about **arithmetic
+   progressions of primes**: the largest prime of a solution drags a run
+   `M, M-b, M-2b, ...` of primes behind it, and `p*` cuts that run short;
+2. **for odd `b` that bound is `b + 2`** -- not because `b` is odd, but because
+   parity kills the run at its first step: the bound `b + 2` is this theorem's
+   degenerate case, not a separate fact about odd numbers;
+3. the `b` admitting a given `n` occupy exactly `N(n)` residue classes modulo
    `n`, with `N(n)` in **closed form**;
-3. the solution set is closed under least common multiple, so for odd `b > 0` it
-   has a **maximum that every element divides**;
-4. its size is **erratic in `b`**: consecutive odd values `b = 61` and `b = 63`
-   give **24** and **274** solutions.
+4. the set is closed under least common multiple, so it has a **maximum that
+   every element divides**: the product of the *effective universe* `E(b)`,
+   which is exactly the set of primes occurring in some solution;
+5. sizes are **erratic in `b`** -- `b = 61` and `b = 63` give **24** and
+   **274** -- and what governs them, `|E(b)|`, is **not** `pi(pi(b))`: measured
+   over 10601 values of `b`, the ratio falls from 0.384 to 0.00164 across five
+   decades, and `|E(b)|` grows like a power `b^0.36`.
 
 <!-- hallazgo:enunciado -->
 ## Definitions and statements
@@ -28,8 +37,11 @@ For an integer `b`, write
 
 Throughout, `P` denotes the set of prime divisors of `n`, and `omega(n) = #P`.
 
-> **Theorem 1 (bound, and finiteness).** Let `b > 0` be odd. If `n` is in `S_b`,
-> then every prime of `n` is at most `b + 2`. In particular `S_b` is finite.
+> **Theorem 1 (bound, and finiteness).** Let `b >= 1` and let `p*` be the
+> smallest prime that does **not** divide `b`. If `n` is in `S_b`, then every
+> prime of `n` is at most `max((2p* - 1) b, 2p*)`. In particular `S_b` is
+> **finite for every `b`**. For odd `b` we have `p* = 2` and the bound sharpens
+> to `b + 2`.
 
 > **Theorem 2 (local characterisation).** For squarefree `n > 1` with prime set
 > `P` and any integer `b`,
@@ -50,8 +62,15 @@ Throughout, `P` denotes the set of prime divisors of `n`, and `omega(n) = #P`.
 > two-prime solutions into factoring `ub + 1`.
 
 > **Theorem 4 (lattice structure).** If `n` and `m` are in `S_b`, so is
-> `lcm(n, m)`. Hence for odd `b > 0` the set `S_b` has a maximum, and every
-> element divides it.
+> `lcm(n, m)`. Hence for every `b >= 1` the set `S_b` has a maximum `N(b)`, and
+> every element divides it. `N(b)` is the product of the **effective universe**
+> `E(b)` (Theorem 5).
+
+> **Theorem 5 (the effective universe).** Let `E(b)` be what remains of the
+> primes `<= C(b)` after repeatedly deleting every prime with no predecessor.
+> Then `E(b)` is the largest source-free set, `N(b) = prod E(b)` is the maximum
+> of `S_b`, and `E(b)` is **exactly** the set of primes occurring in some
+> solution.
 
 Statements, proofs and tables are in [`RESULT.md`](RESULT.md).
 
@@ -84,13 +103,25 @@ condition. Each choice of a covering prime for every `p` pins one residue class
 by the Chinese remainder theorem, and two choices give the same class exactly
 when they agree modulo every `p`, which is what the product `N(n)` counts.
 
-**Theorem 1** is a parity argument. Let `M` be the largest prime of `n` and let
-`q` in `P` satisfy `M | q + b`. If `q = M`, then `M | b` and so `M <= b`.
-Otherwise `q < M`; and if moreover `M > b`, then `0 < q + b < M + b < 2M`, which
-forces `q + b = M`. With `b` odd, an odd `q` would make `M` even, impossible
-since `M > b >= 1`; hence `q = 2` and `M = b + 2`. In every case `M <= b + 2`,
-and since a squarefree `n` in `S_b` is a product of distinct primes bounded by
-`b + 2`, there are finitely many.
+**Theorem 1** is three steps, and the third is a congruence. Let `M` be the
+largest prime of `n`.
+
+*The step.* If a prime `p` of `n` exceeds `(M + b)/2`, its covering prime `q`
+satisfies `p | q + b` with `0 < q + b <= M + b < 2p`, so the only multiple of `p`
+in range is `p` itself: `q + b = p`, and `p - b` is again a prime of `n`.
+
+*The run.* Applying that to `M`, then to `M - b`, and onwards while the term
+exceeds `(M + b)/2`, every `M - i*b` is a prime of `n` -- an arithmetic
+progression of primes of common difference `b`.
+
+*The cut.* `p*` does not divide `b`, so the residues `M - i*b (mod p*)` run
+through every class; `p*` consecutive terms would contain a multiple of `p*`,
+which being prime would have to be `p*` itself. So a run whose terms all exceed
+`p*` is shorter than `p*`, giving `(M - b)/(2b) <= p* - 1`.
+
+For odd `b` this collapses: `p* = 2`, and `M` and `M - b` have opposite parity,
+so the even one is `2` and `M = b + 2`. **Parity was never the reason the bound
+held -- it was the reason the run could not have two terms.**
 
 **Theorem 4** is immediate from Theorem 2: in `lcm(n, m)` every prime keeps the
 covering prime it already had. Finiteness then gives a maximum, and the same
@@ -110,7 +141,7 @@ cd squarefree-shifted-prime-products
 python verify.py
 ```
 
-35 checks, no dependencies, `PASS` or `FAIL` on each, exit code 1 if any fails.
+55 checks, no dependencies, `PASS` or `FAIL` on each, exit code 1 if any fails.
 They re-derive the statements from the definitions, check the exact model counter
 against brute-force enumeration over all `2^n` subsets on 35 values of `b` and
 against the explicit complete lists on 23, and include one external control: they
@@ -122,13 +153,25 @@ is `6`, which is exactly `S_1`.
 <!-- hallazgo:nodice -->
 ## What is not claimed
 
+**The growth law `|E(b)| ~ b^0.36` is measured and modelled, not proved — and it
+is not a fact about the primes.** Replacing the primes by a *random* set of the
+same density and parity, leaving divisibility untouched, reproduces the medians
+to within 3%. So the power law belongs to the peeling, not to the primes, and it
+is stated that way. What does *not* survive that control, and is therefore
+arithmetic, is the structural term: each prime dividing `b` raises `log|E(b)|` by
+about `1/p`.
+
+**Theorem 1's bound is not tight.** It is proved for every `b >= 1`, but for even
+`b` the largest prime sits at a median of 0.35 of the bound; what pins it exactly
+is the longest run of primes in arithmetic progression with common difference
+`b`, which is not determined here.
+
 `b = 1` gives `S_1 = {6}`, the classical fact that `6` is the only squarefree `n`
 with `n | sigma(n)`, and **that is not claimed here**; the standard proof is the
-argument of Theorem 1. Theorem 1 covers **odd** `b > 0` only: for even `b` the
-finiteness of `S_b` would need a case of de Polignac's conjecture and is left
-open. That `|S_b|` is *erratic* is a statement about the shape of the counting
-problem Theorem 2 exhibits — **not** a proof that no closed form can exist. The
-computed counts stop at `b = 2001`.
+argument of Theorem 1. That `|S_b|` is *erratic* is a statement about the shape
+of the counting problem Theorem 2 exhibits — **not** a proof that no closed form
+can exist. The exact counts stop at `b = 2001`, and the sum `sum_{b<=X} |S_b|`
+is not estimated at all: a few `b` dominate it.
 
 ---
 
@@ -147,7 +190,7 @@ computed counts stop at `b = 2001`.
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `\|S_b\|` | 1 | 4 | 6 | 8 | 8 | | 220 | 130 | 58 | **24** | **274** |
 
-The jump from `b = 61` to `b = 63` is the point of item 4 above: an elevenfold
+The jump from `b = 61` to `b = 63` is the point of item 5 above: an elevenfold
 increase between consecutive odd values. The counts are computed with an exact
 model counter — unit propagation, component decomposition, caching — rather than
 by enumerating the `2^{pi(C(b))}` subsets, which is hopeless past `b` around 100.
