@@ -2,6 +2,14 @@ cff-version: 1.2.0
 title: "Squarefree integers dividing the product of their shifted prime divisors"
 message: "If you use this work, please cite it as below."
 version: 2.0.0
+doi: "10.5281/zenodo.22309175"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22309175"
+    description: "Concept DOI: always the latest version."
+  - type: doi
+    value: "10.5281/zenodo.22551741"
+    description: "DOI of this version."
 type: dataset
 authors:
   - family-names: "Ellena Godoy"

@@ -228,3 +228,14 @@ resultados matemáticos fueron producidos por un sistema automatizado (Claude,
 Anthropic) bajo esa dirección. Todos los cálculos fueron verificados por dos
 implementaciones independientes y contrastados contra trabajo publicado. El
 autor es responsable de la corrección de todo lo publicado acá.
+
+## Cómo citar
+
+El trabajo está archivado en Zenodo. Se cita el **DOI paraguas**, que siempre
+resuelve a la última versión:
+
+> Ellena Godoy, Jorge. *Squarefree integers dividing the product of their shifted prime divisors*. Zenodo. https://doi.org/10.5281/zenodo.22309175
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22309175.svg)](https://doi.org/10.5281/zenodo.22309175)
+
+El DOI de esta versión concreta es [`10.5281/zenodo.22551741`](https://doi.org/10.5281/zenodo.22551741).

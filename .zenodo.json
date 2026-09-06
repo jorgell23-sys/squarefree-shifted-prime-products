@@ -28,6 +28,11 @@
       "identifier": "https://oeis.org/A187778",
       "relation": "references",
       "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.22309175",
+      "relation": "isVersionOf",
+      "scheme": "doi"
     }
   ],
   "description": "For an integer b, S_b is the set of squarefree integers n dividing the product of (p + b) over the primes p of n. For b = 1 this is the squarefree part of n | sigma(n), whose only member above 1 is 6, and that case is classical and not claimed here. For odd positive b, every prime of every member is at most b + 2, so S_b is finite. Membership depends only on b modulo n, and the number of admissible residue classes of b for a given squarefree n is exactly the product over p | n of the number of distinct residues q mod p with q | n. For two prime factors the condition closes to pq | b(b+p+q), equivalently b congruent to phi(pq) - 1 modulo pq when neither prime divides b, which factors as (up-1)(uq-1) = ub+1. Squarefree members are closed under least common multiple, so S_b has a maximum that every member divides. Complete counts are given for the 1001 odd b up to 2001; the counting function is shown not to be a function of b through any elementary formula. Twenty checks run in about four seconds with no dependencies, including recomputation of OEIS A187778 as an external control."

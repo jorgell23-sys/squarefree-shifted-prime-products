@@ -442,6 +442,18 @@ values up to 2001 are all multiples of `105 = 3·5·7`: `b = 1155` (79,725,358),
 `data/` is produced entirely by `src/generate_data.py`; no number in this
 document was typed by hand.
 
+
+## Citing
+
+This work is archived on Zenodo. Cite the **concept DOI**, which always resolves
+to the latest version:
+
+> Ellena Godoy, Jorge. *Squarefree integers dividing the product of their shifted prime divisors*. Zenodo. https://doi.org/10.5281/zenodo.22309175
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22309175.svg)](https://doi.org/10.5281/zenodo.22309175)
+
+The DOI of this specific version is [`10.5281/zenodo.22551741`](https://doi.org/10.5281/zenodo.22551741).
+
 ## Authorship
 
 System design and research direction are the author's. The mathematical results
