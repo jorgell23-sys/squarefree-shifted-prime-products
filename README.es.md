@@ -9,16 +9,25 @@ pertenencia resulta decidida **enteramente por `b` módulo `n`**, primo por
 primo, mediante una condición que nombra exactamente qué restos sirven
 (Teorema 2).
 
-De ahí salen cuatro consecuencias, y son el hallazgo:
+De ahí salen cinco consecuencias, y son el hallazgo:
 
-1. para `b > 0` impar, todo primo de toda solución es a lo sumo `b + 2`, así que
-   el conjunto de soluciones es **finito** y por lo tanto calculable entero;
-2. los `b` que admiten un `n` dado ocupan exactamente `N(n)` clases de restos
+1. para **todo** `b >= 1` el conjunto de soluciones es **finito**, y todo primo
+   de toda solución es a lo sumo `max((2p* - 1) b, 2p*)`, donde `p*` es el menor
+   primo que **no** divide a `b`. La cota es un enunciado sobre **progresiones
+   aritméticas de primos**: el mayor primo de una solución arrastra detrás suyo
+   una tirada `M, M-b, M-2b, ...` de primos, y `p*` la corta;
+2. **para `b` impar esa cota es `b + 2`** — no porque `b` sea impar, sino porque
+   la paridad mata la tirada en su primer paso: la cota `b + 2` es el caso
+   degenerado de este teorema, no un hecho aparte sobre los impares;
+3. los `b` que admiten un `n` dado ocupan exactamente `N(n)` clases de restos
    módulo `n`, con `N(n)` en **forma cerrada**;
-3. el conjunto de soluciones es cerrado por mínimo común múltiplo, así que para
-   `b > 0` impar tiene un **máximo al que todo elemento divide**;
-4. su tamaño es **errático en `b`**: los impares consecutivos `b = 61` y
-   `b = 63` dan **24** y **274** soluciones.
+4. el conjunto es cerrado por mínimo común múltiplo, así que tiene un **máximo
+   al que todo elemento divide**: el producto del *universo efectivo* `E(b)`,
+   que es exactamente el conjunto de primos que aparecen en alguna solución;
+5. los tamaños son **erráticos en `b`** —`b = 61` y `b = 63` dan **24** y
+   **274**— y lo que los gobierna, `|E(b)|`, **no** es `pi(pi(b))`: medido sobre
+   10601 valores de `b`, la razón cae de 0,384 a 0,00164 en cinco décadas, y
+   `|E(b)|` crece como una potencia `b^0,36`.
 
 <!-- hallazgo:enunciado -->
 ## Definiciones y enunciados
@@ -30,8 +39,10 @@ Para un entero `b`, se escribe
 En todo lo que sigue `P` es el conjunto de divisores primos de `n`, y
 `omega(n) = #P`.
 
-> **Teorema 1 (cota y finitud).** Sea `b > 0` impar. Si `n` está en `S_b`,
-> entonces todo primo de `n` es a lo sumo `b + 2`. En particular `S_b` es finito.
+> **Teorema 1 (cota y finitud).** Sea `b >= 1` y sea `p*` el menor primo que
+> **no** divide a `b`. Si `n` está en `S_b`, entonces todo primo de `n` es a lo
+> sumo `max((2p* - 1) b, 2p*)`. En particular `S_b` es **finito para todo `b`**.
+> Para `b` impar `p* = 2` y la cota se afina a `b + 2`.
 
 > **Teorema 2 (caracterización local).** Para `n > 1` libre de cuadrados con
 > conjunto de primos `P` y cualquier entero `b`,
@@ -52,8 +63,15 @@ En todo lo que sigue `P` es el conjunto de divisores primos de `n`, y
 > de dos primos se vuelve así factorizar `ub + 1`.
 
 > **Teorema 4 (estructura de retículo).** Si `n` y `m` están en `S_b`, también
-> `lcm(n, m)`. Luego, para `b > 0` impar, `S_b` tiene máximo y todo elemento lo
-> divide.
+> `lcm(n, m)`. Luego, para todo `b >= 1`, `S_b` tiene un máximo `N(b)` y todo
+> elemento lo divide. `N(b)` es el producto del **universo efectivo** `E(b)`
+> (Teorema 5).
+
+> **Teorema 5 (el universo efectivo).** Sea `E(b)` lo que queda de los primos
+> `<= C(b)` al ir borrando, iterando, todo primo sin predecesor. Entonces `E(b)`
+> es el mayor conjunto sin fuente, `N(b) = prod E(b)` es el máximo de `S_b`, y
+> `E(b)` es **exactamente** el conjunto de primos que aparecen en alguna
+> solución.
 
 Enunciados, demostraciones y tablas están en [`RESULT.md`](RESULT.md).
 
@@ -87,13 +105,27 @@ condición. Cada elección de un primo cubridor para cada `p` fija una clase de
 restos por el teorema chino, y dos elecciones dan la misma clase exactamente
 cuando coinciden módulo todo `p`, que es lo que cuenta el producto `N(n)`.
 
-**El Teorema 1 es un argumento de paridad.** Sea `M` el mayor primo de `n` y sea
-`q` en `P` con `M | q + b`. Si `q = M`, entonces `M | b` y por lo tanto
-`M <= b`. Si no, `q < M`; y si además `M > b`, entonces `0 < q + b < M + b < 2M`,
-lo que obliga `q + b = M`. Con `b` impar, un `q` impar haría par a `M`,
-imposible porque `M > b >= 1`; luego `q = 2` y `M = b + 2`. En todos los casos
-`M <= b + 2`, y como un `n` libre de cuadrados de `S_b` es producto de primos
-distintos acotados por `b + 2`, hay finitos.
+**El Teorema 1 son tres pasos, y el tercero es una congruencia.** Sea `M` el
+mayor primo de `n`.
+
+*El escalón.* Si un primo `p` de `n` supera `(M + b)/2`, su primo cubridor `q`
+cumple `p | q + b` con `0 < q + b <= M + b < 2p`, así que el único múltiplo de
+`p` en ese rango es `p` mismo: `q + b = p`, y `p - b` es otra vez un primo
+de `n`.
+
+*La tirada.* Aplicándolo a `M`, después a `M - b`, y así mientras el término
+supere `(M + b)/2`, todos los `M - i*b` son primos de `n`: una progresión
+aritmética de primos de diferencia `b`.
+
+*El corte.* `p*` no divide a `b`, así que los restos `M - i*b (mod p*)` recorren
+todas las clases; `p*` términos consecutivos contendrían un múltiplo de `p*`,
+que siendo primo tendría que ser `p*` mismo. Luego una tirada cuyos términos
+superen todos a `p*` es más corta que `p*`, y eso da `(M - b)/(2b) <= p* - 1`.
+
+Para `b` impar esto se derrumba: `p* = 2`, y `M` y `M - b` tienen paridad
+distinta, así que el par es `2` y `M = b + 2`. **La paridad nunca fue la razón
+por la que valía la cota: fue la razón por la que la tirada no podía tener dos
+términos.**
 
 **El Teorema 4 es inmediato del Teorema 2:** en `lcm(n, m)` cada primo conserva
 el primo cubridor que ya tenía. La finitud da entonces un máximo, y el mismo
@@ -126,15 +158,26 @@ la función de Dedekind `psi(k) = k * prod_{p | k}(1 + 1/p)`— desde cero hasta
 <!-- hallazgo:nodice -->
 ## Qué no se afirma
 
+**La ley de crecimiento `|E(b)| ~ b^0,36` está medida y modelada, no demostrada
+— y no es un hecho sobre los primos.** Reemplazando los primos por un conjunto
+*aleatorio* de la misma densidad y la misma paridad, dejando intacta la
+divisibilidad, se reproducen las medianas dentro del 3 %. La ley de potencia es
+del pelado y no de los primos, y así se dice. Lo que **no** sobrevive a ese
+control, y por lo tanto sí es aritmético, es el término estructural: cada primo
+que divide a `b` sube `log|E(b)|` en aproximadamente `1/p`.
+
+**La cota del Teorema 1 no es ajustada.** Está demostrada para todo `b >= 1`,
+pero con `b` par el mayor primo queda en una mediana del 0,35 de la cota; lo que
+lo fija exactamente es la tirada más larga de primos en progresión aritmética de
+diferencia `b`, que acá no se determina.
+
 `b = 1` da `S_1 = {6}`, el hecho clásico de que `6` es el único `n` libre de
 cuadrados con `n | sigma(n)`, y **eso no se reclama acá**; la demostración
-estándar es el argumento del Teorema 1. El Teorema 1 ahora cubre todo `b >= 1`,
-pero su cota **no es ajustada** para `b` par: el mayor primo exacto lo gobierna
-la progresión aritmética de primos de diferencia `b` más larga, que acá no se
-determina. Que `|S_b|` sea *errático* es una afirmación
-sobre la forma del problema de conteo que el Teorema 2 exhibe, **no** una
-demostración de que no pueda existir forma cerrada. Los conteos calculados
-llegan hasta `b = 2001`.
+estándar es el argumento del Teorema 1. Que `|S_b|` sea *errático* es una
+afirmación sobre la forma del problema de conteo que el Teorema 2 exhibe, **no**
+una demostración de que no pueda existir forma cerrada. Los conteos exactos
+llegan hasta `b = 2001`, y la suma `sum_{b<=X} |S_b|` no se estima en absoluto:
+unos pocos `b` la dominan.
 
 ---
 
@@ -153,7 +196,7 @@ llegan hasta `b = 2001`.
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `\|S_b\|` | 1 | 4 | 6 | 8 | 8 | | 220 | 130 | 58 | **24** | **274** |
 
-El salto de `b = 61` a `b = 63` es el punto 4 de arriba: once veces más entre
+El salto de `b = 61` a `b = 63` es el punto 5 de arriba: once veces más entre
 dos impares consecutivos. Los conteos se calculan con un contador exacto de
 modelos —propagación unitaria, descomposición en componentes, memoria— y no
 enumerando los `2^{pi(C(b))}` subconjuntos, que es inviable pasando `b` de 100.
